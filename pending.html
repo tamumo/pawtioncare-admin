@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAWTION CARE - Adoption Forms</title>
+    <style>
+        
+        @font-face {
+        font-family: 'mainfont';
+        src: url(FONT1/b4.ttf);}
+
+         :root {
+            --primary-color: #ff7c04;
+            --primary-dark: #e66e00;
+            --primary-light: #ffa64d;
+            --secondary-color: #2d3436;
+            --background-color: #fff5eb;
+            --text-color: #2d3436;
+            --approve-color: #ff9f43;
+            --reject-color: #ff6b6b;
+            --pending-color: #ffa64d;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: white;
+            
+        }
+
+        .header {
+            background-image: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            transition: background-color var(--transition-speed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            color: black;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 0.5rem;
+            font-family: mainfont;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        #adoptionForms {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .form-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            border-top: 2.5px solid #ff7c04;
+        }
+
+        .form-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-card h2 {
+            color: black;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            border-bottom: 2px solid #ff7c04;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-card p {
+    margin: 0.75rem 0;
+    color: var(--text-color);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-card p strong {
+    color: black;
+    font-weight: 450; /* Adjusted from bold to normal weight */
+    min-width: 140px;
+}
+
+.form-card p span {
+    font-weight: 600; /* Make the form values bold */
+}
+
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .button {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .button:hover::after {
+            transform: translateX(0);
+        }
+
+        .approve { 
+            background-color: #FFD66B;
+            color: black; 
+        }
+
+        .reject { 
+            background-color: #EF4444;
+            color: white; 
+        }
+
+        .pending { 
+            background-color: #AB886D;
+            color: white; 
+        }
+
+        .button:hover { 
+            transform: translateY(-2px);
+        }
+
+        .side-nav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1001;
+            top: 0;
+            left: 0;
+            background-image: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            overflow-x: hidden;
+            transition: width var(--transition-speed);
+            padding-top: 60px;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .side-nav a {
+            padding: 1rem 1.5rem;
+            text-decoration: none;
+            font-size: 1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all var(--transition-speed);
+            border-left: 4px solid transparent;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.1) 50%, transparent 50%);
+            background-size: 200% 100%;
+            background-position: right bottom;
+            transition: all 0.3s ease-out;
+        }
+
+        .side-nav a:hover {
+            background-position: left bottom;
+            border-left-color: white;
+            padding-left: 2rem;
+        }
+
+        .side-nav .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color var(--transition-speed);
+        }
+
+        .side-nav .close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Status update animation */
+        @keyframes statusUpdate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .status-updated {
+            animation: statusUpdate 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-card {
+                padding: 1rem;
+            }
+
+            .form-card h2 {
+                font-size: 1.2rem;
+            }
+
+            .button {
+                padding: 0.625rem 0.875rem;
+                font-size: 0.8125rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <button class="menu-btn" onclick="openNav()">☰</button>
+        <div class="logo">PAWTION CARE 🐾</div>
+    </header>
+
+    <div id="mySidenav" class="side-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
+        <a href="posting_pet_adoption.html">POST A NEW PET FOR ADOPTION</a>
+        <a href="list_of_pets.html">LIST OF PETS</a>
+        <a href="pending.html">LIST OF ADOPTER</a>
+        <a href="lost_and_found.html">POSTING OF MISSING PETS</a>
+        <a href="missing_pets.html">LIST OF MISSING PETS</a>
+        <a href="messages.html">MESSAGES</a>
+        <a href="success_petAdoption.html">History of Success Pet Adoption</a>
+    </div>
+
+    <div class="container">
+        <h1>Adoption Forms</h1>
+        <div id="adoptionForms"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+        import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.firebaseapp.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Function to update adoption status
+        function updateAdoptionStatus(formId, status) {
+            const formRef = ref(db, `adoption_forms/${formId}`);
+            update(formRef, { status: status })
+                .then(() => console.log(`Form ${formId} status updated to ${status}`))
+                .catch((error) => console.error("Error updating status:", error));
+        }
+
+        // Fetch adoption forms
+        const formsRef = ref(db, 'adoption_forms');
+        onValue(formsRef, (snapshot) => {
+            const forms = snapshot.val();
+            let formsHtml = '';
+            for (let key in forms) {
+                const form = forms[key];
+                formsHtml += `
+                    <div class="form-card">
+                        <h2>${form.fullName}</h2>
+                        <p><strong>Age:</strong> ${form.age}</p>
+                        <p><strong>Address:</strong> ${form.address}</p>
+                        <p><strong>Contact:</strong> ${form.contactNumber}</p>
+                        <p><strong>Email:</strong> ${form.email}</p>
+                        <p><strong>Household Type:</strong> ${form.householdType}</p>
+                        <p><strong>Number of Pets:</strong> ${form.numberOfPets}</p>
+                        <p><strong>Employment Status:</strong> ${form.employmentStatus}</p>
+                        <div class="button-group">
+                            <button class="button approve" onclick="updateAdoptionStatus('${key}', 'approved')">Approve</button>
+                            <button class="button reject" onclick="updateAdoptionStatus('${key}', 'rejected')">Reject</button>
+                            <button class="button pending" onclick="updateAdoptionStatus('${key}', 'pending')">Pending</button>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('adoptionForms').innerHTML = formsHtml;
+        }, (error) => {
+            console.error("Error fetching adoption forms:", error);
+            document.getElementById('adoptionForms').innerHTML = "Error loading adoption forms. Please try again later.";
+        });
+
+        // Make updateAdoptionStatus available globally
+        window.updateAdoptionStatus = updateAdoptionStatus;
+
+        // Side Navigation Functions
+        window.openNav = function () {
+            document.getElementById("mySidenav").style.width = "250px";
+        };
+
+        window.closeNav = function () {
+            document.getElementById("mySidenav").style.width = "0";
+        };
+    </script>
+</body>
+
+</html>

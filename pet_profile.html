@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile of Pet for Adoption</title>
+    <style>
+         @font-face {
+        font-family: 'mainfont';
+        src: url(FONT1/b4.ttf);}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 100%;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: black;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ff7c04;
+            margin-bottom: 30px;
+            font-family: mainfont;
+        }
+     
+        .tables-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .table-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            color: black;
+            font-size: 1.5em;
+            margin: 0 0 20px;
+            padding: 10px;
+            background-color: lightgoldenrodyellow;
+            border-radius: 6px;
+            border-left: 4px solid #ff7c04;
+        }
+        .form-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+          
+        }
+        .form-table td {
+            padding: 12px;
+            border: 1px solid #eee;
+            
+        }
+        .form-table td:first-child {
+            width: 140px;
+            background-color: #f8f9fa;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .required {
+            color: red;
+            margin-left: 3px;
+        }
+        input[type="text"], 
+        input[type="number"], 
+        input[type="date"], 
+        input[type="email"], 
+        input[type="tel"], 
+        select, 
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+            font-size: 0.9em;
+        }
+        input:focus, 
+        select:focus, 
+        textarea:focus {
+            outline: none;
+            border-color: #ff7c04;
+            box-shadow: 0 0 0 2px rgba(255,124,4,0.1);
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            clear: both;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #ff7c04;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 10px;
+            font-weight: bold;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        button:hover {
+            background-color: #ff6600;
+            transform: translateY(-2px);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        @media (max-width: 1200px) {
+            .tables-container {
+                flex-direction: column;
+            }
+            .table-section {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Profile of Pet for Adoption</h1>
+        <form id="petProfileForm">
+            <div class="tables-container">
+                <!-- Pet Profile Section -->
+                <div class="table-section">
+                    <h2 class="section-title">Pet Profile</h2>
+                    <table class="form-table">
+                        <tr>
+                            <td>Name<span class="required">*</span></td>
+                            <td><input type="text" id="petName" name="petName" required></td>
+                        </tr>
+                        <tr>
+                            <td>Bio</td>
+                            <td><textarea id="petBio" name="petBio" rows="2"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Age<span class="required">*</span></td>
+                            <td><input type="text" id="petAge" name="petAge" required></td>
+                        </tr>
+                        <tr>
+                            <td>Species<span class="required">*</span></td>
+                            <td><input type="text" id="species" name="species" required></td>
+                        </tr>
+                        <tr>
+                            <td>Breed<span class="required">*</span></td>
+                            <td><input type="text" id="breed" name="breed" required></td>
+                        </tr>
+                        <tr>
+                            <td>Gender<span class="required">*</span></td>
+                            <td>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Color<span class="required">*</span></td>
+                            <td><input type="text" id="color" name="color" required></td>
+                        </tr>
+                        <tr>
+                            <td>Size<span class="required">*</span></td>
+                            <td><input type="text" id="size" name="size" required></td>
+                        </tr>
+                        <tr>
+                            <td>Weight (kg)<span class="required">*</span></td>
+                            <td><input type="number" id="weight" name="weight" step="0.1" required></td>
+                        </tr>
+                        <tr>
+                            <td>Birth Date</td>
+                            <td><input type="date" id="dateOfBirth" name="dateOfBirth"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Medical History Section -->
+                <div class="table-section">
+                    <h2 class="section-title">Medical History</h2>
+                    <table class="form-table">
+                        <tr>
+                            <td>Health</td>
+                            <td><textarea id="health" name="health" rows="2"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Allergies</td>
+                            <td><textarea id="allergies" name="allergies" rows="2"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Medications</td>
+                            <td><textarea id="medications" name="medications" rows="2"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Surgery History</td>
+                            <td><textarea id="surgeryHistory" name="surgeryHistory" rows="2"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Microchip<span class="required">*</span></td>
+                            <td>
+                                <select id="microchip" name="microchip" required>
+                                    <option value="">Select Status</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Spay/Neuter<span class="required">*</span></td>
+                            <td>
+                                <select id="spayNeuter" name="spayNeuter" required>
+                                    <option value="">Select Status</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Vaccination</td>
+                            <td>
+                                <select id="vaccination" name="vaccination">
+                                    <option value="">Select Status</option>
+                                    <option value="up-to-date">Up-to-date</option>
+                                    <option value="partial">Partial</option>
+                                    <option value="not-vaccinated">Not Vaccinated</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Lifestyle Section -->
+                <div class="table-section">
+                    <h2 class="section-title">Lifestyle & Ownership</h2>
+                    <table class="form-table">
+                        <tr>
+                            <td>Status<span class="required">*</span></td>
+                            <td>
+                                <select id="adoptionStatus" name="adoptionStatus" required>
+                                    <option value="">Select Status</option>
+                                    <option value="available">Available</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="adopted">Adopted</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Temperament</td>
+                            <td><textarea id="temperament" name="temperament" rows="2"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Good with Kids<span class="required">*</span></td>
+                            <td>
+                                <select id="goodWithChildren" name="goodWithChildren" required>
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                    <option value="unknown">Unknown</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Good with Pets<span class="required">*</span></td>
+                            <td>
+                                <select id="goodWithPets" name="goodWithPets" required>
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                    <option value="unknown">Unknown</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Diet Needs</td>
+                            <td><textarea id="diet" name="diet" rows="2"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Exercise Needs</td>
+                            <td><textarea id="exerciseNeeds" name="exerciseNeeds" rows="2"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Food Brands</td>
+                            <td><input type="text" id="preferredFood" name="preferredFood"></td>
+                        </tr>
+                        <tr>
+                            <td>Treats</td>
+                            <td><input type="text" id="treatPreferences" name="treatPreferences"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" onclick="saveChanges()">Save Changes</button>
+                <button type="button" onclick="goBack()">Go Back</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+        import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.firebaseapp.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Get the pet ID from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const petId = urlParams.get('petId');
+
+        // Fetch and display pet data
+        const petRef = ref(db, `pets/${petId}`);
+        get(petRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const petData = snapshot.val();
+                for (let field in petData) {
+                    const element = document.getElementById(field);
+                    if (element) {
+                        if (element.type === 'date') {
+                            element.value = petData[field].split('T')[0];
+                        } else {
+                            element.value = petData[field];
+                        }
+                    }
+                }
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+
+        // Save changes function
+        window.saveChanges = function() {
+            const updatedPetData = {};
+            const formElements = document.getElementById('petProfileForm').elements;
+            for (let element of formElements) {
+                if (element.name) {
+                    updatedPetData[element.name] = element.value;
+                }
+            }
+
+            update(petRef, updatedPetData).then(() => {
+                alert("Changes saved successfully!");
+            }).catch((error) => {
+                console.error("Error updating document: ", error);
+            });
+        };
+
+        // Go back function
+        window.goBack = function() {
+            window.history.back();
+        };
+    </script>
+</body>
+</html>

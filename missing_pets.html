@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing Pets</title>
+    <style>
+         @font-face {
+        font-family: 'mainfont';
+        src: url(FONT1/b4.ttf);}
+        :root {
+            --primary-color: #ff7c04;
+            --background-color: #f4f4f4;
+            --text-color: #000000;
+            --card-background: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .header {
+            background-image: linear-gradient(180deg, #ff7c04, #f39d47);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .menu-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+        }
+
+        .side-nav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+    background: white;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 60px; /* Adjust this to match your header height */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    border-right: 4px solid #ff7c04;
+}
+
+.side-nav a {
+    /* Links inside the side menu */
+    padding: 1rem 1.5rem; /* Padding for clickable area */
+    text-decoration: none; /* Removes underline from links */
+    font-size: 0.9rem; /* Slightly smaller text size */
+    color: black; /* Default text color is black */
+    display: flex; /* Flex layout for icons and text */
+    align-items: center; /* Aligns items vertically */
+    gap: 0.75rem; /* Space between icon and text */
+    transition: 0.3s; /* Smooth hover effect */
+    border-radius: 0; /* No rounded corners initially */
+}
+
+.side-nav a:hover {
+    /* Hover state for links */
+    background-color:  #fff5eb; /* Light orange background */
+    color: black; /* Text color remains black */
+    border-radius: 8px; /* Rounded corners */
+    padding: 1rem 1.5rem; /* Ensures spacing is consistent */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect for depth */
+}
+
+.side-nav a:last-child {
+    /* Styling for the last link */
+    margin-top: auto; /* Pushes it to the bottom */
+    border-top: 1px solid #f1f5f9; /* Divider line */
+}
+
+.side-nav .close-btn {
+    position: absolute;
+    top: 10px; /* Adjust distance from top */
+    right: 10px; /* Adjust distance from right */
+    font-size: 2rem;
+    color: var(--text-color);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    z-index: 1002;
+}
+.side-nav .close-btn:hover {
+    background-color: #f1f5f9; /* Highlight on hover */
+}
+/* Style for images inside side menu links */
+.side-nav a img.side-nav-icon {
+    width: 18px; /* Adjust the width to make the image smaller */
+    height: 18px; /* Adjust the height to make the image smaller */
+    margin-right: 10px; /* Space between the icon and the text */
+}
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: black;
+            margin-bottom: 20px;
+            text-align: center;
+            font-family: mainfont;
+            font-weight: 450;
+            font-size: 25px;
+        }
+
+        .pet-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+           
+        }
+
+        .pet-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          
+            box-shadow: var(--card-shadow);
+            
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            border-top: 6px solid #ff7c04;
+           
+        }
+
+        .pet-card h2 {
+            color: black;
+            margin-bottom: 10px;
+        
+            
+        }
+
+        .pet-info {
+            margin-bottom: 15px;
+            border-top: 6px solid #fff5eb;
+            
+        }
+
+        .pet-info p {
+            margin: 5px 0;
+            
+        }
+
+        .pet-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pet-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .approve-btn {
+            background-color: #FFD66B;
+            color: black; 
+            margin: 5px;
+        }
+
+        .decline-btn {
+            background-color: #EF4444;
+            color: white; 
+            margin: 5px;
+        }
+
+        .pet-actions button:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .pet-card {
+                width: 100%;
+            }
+        }
+
+        .pet-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+           
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="menu-btn" onclick="openNav()">☰</button>
+        <div class="logo">PAWTION CARE 🐾</div>
+    </header>
+
+    <div id="mySidenav" class="side-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>    
+        <a href="posting_pet_adoption.html"><img src="picture/postpet.png" alt="Post a New Pet" class="side-nav-icon">Post a New Pet for Adoption</a>
+        <a href="list_of_pets.html"><img src="picture/list.png" alt="List of Pets" class="side-nav-icon">List of Pets for Adoption</a>
+        <a href="lost_and_found.html"><img src="picture/post.png" alt="Post Lost Pet" class="side-nav-icon">Post a New Pet for Lost and Found</a>
+        <a href="missing_pets.html"><img src="picture/list.png" alt="Missing Pets" class="side-nav-icon">List of Pets for Lost and Found</a>
+        <a href="messages.html"><img src="picture/chat.png" alt="Messages" class="side-nav-icon">Messages</a>
+        <a href="success_petAdoption.html"><img src="picture/history.png" alt="History of Success Adoption" class="side-nav-icon">History of Success Pet Adoption</a>
+        <a href="reactivation.html"><img src="picture/reactivated.png" alt="Reactivation Requests" class="side-nav-icon">Reactivation Requests</a>
+        <a href="javascript:void(0)" onclick="logout()" style="margin-top: auto;"><img src="picture/logout.png" alt="Logout" class="side-nav-icon">Logout</a>
+    </div>
+
+
+
+
+
+    <div class="content">
+        <h1>Missing Pets to be Uploaded in the Mobile Application</h1>
+        <div class="pet-cards" id="pets-container">
+            <!-- Pet cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        function logout() {
+            closeNav();
+            window.location.href = 'account.html';
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, remove, get, push } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+        import { getStorage, ref as storageRef, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.firebaseapp.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+
+        window.updateStatus = async function(petId, status) {
+            try {
+                if (!petId) {
+                    throw new Error('Pet ID is required');
+                }
+        
+                const petRef = ref(db, 'Missing_Pets/' + petId);
+                const snapshot = await get(petRef);
+        
+                if (!snapshot.exists()) {
+                    throw new Error('Pet not found');
+                }
+        
+                const petData = snapshot.val();
+        
+                if (status === 'declined') {
+                    // Simply remove from Missing_Pets
+                    await remove(petRef);
+                    
+                    const cardElement = document.querySelector(`div[data-id="${petId}"]`);
+                    if (cardElement) {
+                        cardElement.remove();
+                    }
+                    
+                    alert('Pet has been declined');
+                } else if (status === 'approved') {
+                    // Move to lost_and_found
+                    const lostAndFoundRef = ref(db, 'lost_and_found/' + petId);
+                    await set(lostAndFoundRef, {
+                        ...petData,
+                        status: 'approved',
+                        approvalDate: new Date().toISOString()
+                    });
+        
+                    // Remove from Missing_Pets
+                    await remove(petRef);
+                    
+                    const cardElement = document.querySelector(`div[data-id="${petId}"]`);
+                    if (cardElement) {
+                        cardElement.remove();
+                    }
+                    
+                    alert('Pet approved and moved to Lost and Found');
+                }
+            } catch (error) {
+                console.error('Error updating pet status:', error);
+                alert('An error occurred while updating the pet status: ' + error.message);
+            }
+        };
+
+        function renderPet(petId, petData) {
+            const petCard = document.createElement('div');
+            petCard.className = 'pet-card';
+            petCard.dataset.id = petId;
+
+            const petImage = document.createElement('img');
+            petImage.className = 'pet-image';
+            petImage.alt = `${petData.petName} photo`;
+
+            if (petData.photoUrl) {
+                getDownloadURL(storageRef(storage, petData.photoUrl))
+                    .then((url) => {
+                        petImage.src = url;
+                    })
+                    .catch((error) => {
+                        console.error("Error loading image:", error);
+                        petImage.src = 'placeholder-image-url.jpg';
+                    });
+            } else {
+                petImage.src = 'placeholder-image-url.jpg';
+            }
+
+            petCard.innerHTML = `
+                <h2>${petData.petName || 'Unknown Pet'}</h2>
+                <div class="pet-info">
+                    <p><strong>Age:</strong> ${petData.age || 'N/A'}</p>
+                    <p><strong>Breed:</strong> ${petData.breed || 'N/A'}</p>
+                    <p><strong>Color:</strong> ${petData.color || 'N/A'}</p>
+                    <p><strong>Last Seen:</strong> ${petData.lastSeen || 'N/A'}</p>
+                    <p><strong>Contact Number:</strong> ${petData.contactNumber || 'N/A'}</p>
+                    <p><strong>Reward:</strong> ${petData.reward || 'N/A'}</p>
+                    <p><strong>Remarks:</strong> ${petData.remarks || 'N/A'}</p>
+                </div>
+                <div class="pet-actions">
+                    <button class="approve-btn" onclick="updateStatus('${petId}', 'approved')">Approve</button>
+                    <button class="decline-btn" onclick="updateStatus('${petId}', 'declined')">Decline</button>
+                </div>
+            `;
+
+            petCard.insertBefore(petImage, petCard.firstChild);
+            document.getElementById('pets-container').appendChild(petCard);
+        }
+
+        // Listen for changes in Missing_Pets
+        const petsRef = ref(db, 'Missing_Pets');
+        onValue(petsRef, (snapshot) => {
+            const petsContainer = document.getElementById('pets-container');
+            petsContainer.innerHTML = '';
+            
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    const petId = childSnapshot.key;
+                    const petData = childSnapshot.val();
+                    renderPet(petId, petData);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

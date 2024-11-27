@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Reports</title>
+  <style>
+    @font-face {
+      font-family: 'mainfont';
+      src: url(FONT1/b4.ttf);}
+    /* Existing styles */
+    :root {
+      --primary-color: #4e2f00;
+      --hover-color: #7a4a00;
+      --bg-color: #f4f4f4;
+      --table-border: #ddd;
+      --danger-color: #dc3545;
+      --danger-hover: #c82333;
+    }
+
+    /* Previous styles remain unchanged */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-color);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 15px;
+      width: 100%;
+    }
+
+    h1 {
+      color: black;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      font-family: mainfont;
+    }
+
+    .report-section {
+      background-color: white;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      border-top: 5px solid #ff7c04;
+    }
+
+    .reporter-info {
+      background-color: rgb(233, 230, 230);
+      color: black;
+      padding: 15px;
+      margin-bottom: 0;
+    }
+
+    .reporter-info h3 {
+      margin-bottom: 10px;
+    }
+
+    .reporter-info p {
+      margin: 5px 0;
+    }
+
+    .report-table {
+      padding: 20px;
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    .report-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .report-table th, 
+    .report-table td {
+      padding: 15px;
+      border-bottom: 1px solid var(--table-border);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .report-table th {
+      background-color: #f2f2f2;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .report-table td {
+      word-break: break-word;
+    }
+
+    .report-table tr:hover {
+      background-color: #f8f8f8;
+    }
+
+    .report-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .report-table img {
+      max-width: 150px;
+      height: auto;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      display: block;
+    }
+
+    .report-table img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Delete button styles */
+    .delete-btn {
+      background-color: #EF4444;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .delete-btn:hover {
+      background-color: #e47f7f;
+    }
+
+    /* Delete confirmation modal */
+    .delete-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .delete-modal.show {
+      display: flex;
+    }
+
+    .delete-modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .delete-modal-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .delete-modal-buttons button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .confirm-delete {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .cancel-delete {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .confirm-delete:hover {
+      background-color: var(--danger-hover);
+    }
+
+    .cancel-delete:hover {
+      background-color: #5a6268;
+    }
+
+    /* Existing modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      max-width: 90%;
+      max-height: 90vh;
+      position: relative;
+    }
+
+    .modal-image {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 5px 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 5px;
+      line-height: 1;
+    }
+
+    .close-modal:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .go-back {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 25px;
+      background: linear-gradient(135deg, #ff7c04, #ff9642);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      font-weight: 600;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      border: none;
+  }
+  
+  .go-back:before {
+      content: '←';
+      font-size: 1.2em;
+      line-height: 1;
+  }
+  
+  .go-back:hover {
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      background: linear-gradient(135deg, #ff8534, #ffa76a);
+  }
+
+    /* Existing responsive styles */
+    @media (max-width: 1200px) {
+      .container {
+        max-width: 100%;
+        padding: 0 10px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .report-table th,
+      .report-table td {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      .report-table img {
+        max-width: 100px;
+      }
+
+      .modal-content {
+        max-width: 95%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .report-table th,
+      .report-table td {
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      .report-table img {
+        max-width: 80px;
+      }
+
+
+
+      .reporter-info h3 {
+        font-size: 16px;
+      }
+
+      .reporter-info p {
+        font-size: 14px;
+      }
+
+      .delete-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .report-table {
+        position: relative;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .report-table table {
+        min-width: 600px;
+      }
+
+      .go-back {
+        padding: 10px 20px;
+        font-size: 14px;
+        bottom: 20px;
+    }
+
+      .report-table::after {
+        content: '←→';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 5px;
+        background: rgba(0,0,0,0.5);
+        color: white;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Pet Reports</h1>
+    <div id="reportsContainer"></div>
+    <a href="javascript:history.back()" class="go-back">Go Back</a>
+  </div>
+
+  <!-- Image Modal -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <img id="modalImage" class="modal-image" alt="Enlarged image">
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="delete-modal">
+    <div class="delete-modal-content">
+      <h3>Confirm Delete</h3>
+      <p>Are you sure you want to delete this report? This action cannot be undone.</p>
+      <div class="delete-modal-buttons">
+        <button class="confirm-delete" onclick="confirmDelete()">Yes, Delete</button>
+        <button class="cancel-delete" onclick="closeDeleteModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Existing modal functions
+    function openModal(imageUrl) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImage');
+      
+      modalImg.onerror = function() {
+        this.src = '/api/placeholder/400/400';
+        console.log('Failed to load image:', imageUrl);
+      };
+      
+      modalImg.src = imageUrl;
+      modal.classList.add('show');
+
+      modal.onclick = function(e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      };
+
+      document.addEventListener('keydown', handleEscKey);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('imageModal');
+      modal.classList.remove('show');
+      document.removeEventListener('keydown', handleEscKey);
+    }
+
+    function handleEscKey(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    }
+
+    // Delete modal functions
+    let currentReportToDelete = null;
+
+    function openDeleteModal(reportId, petId) {
+      const modal = document.getElementById('deleteModal');
+      currentReportToDelete = { reportId, petId };
+      modal.classList.add('show');
+    }
+
+    function closeDeleteModal() {
+      const modal = document.getElementById('deleteModal');
+      modal.classList.remove('show');
+      currentReportToDelete = null;
+    }
+
+    function formatTimestamp(timestamp) {
+      if (!timestamp) return 'N/A';
+      const date = new Date(timestamp);
+      return date.toLocaleDateString();
+    }
+
+    function createReportSection(reporterId, reports, petId) {
+      const section = document.createElement('div');
+      section.className = 'report-section';
+      
+      const reporterInfo = document.createElement('div');
+      reporterInfo.className = 'reporter-info';
+      reporterInfo.innerHTML = `
+        <h3>Reporter Information</h3>
+        <p>Name: <span class="reporter-name">Loading...</span></p>
+        <p>Email: <span class="reporter-email">Loading...</span></p>
+        <p>Contact: <span class="reporter-contact">Loading...</span></p>
+      `;
+      section.appendChild(reporterInfo);
+    
+      const tableDiv = document.createElement('div');
+      tableDiv.className = 'report-table';
+      tableDiv.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Last Seen</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Condition</th>
+              <th>Message</th>
+              <th>Image</th>
+              <th>Date Reported</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${reports.map(report => `
+              <tr>
+                <td>${report.lastSeen || 'N/A'}</td>
+                <td>${report.date || 'N/A'}</td>
+                <td>${report.time || 'N/A'}</td>
+                <td>${report.condition || 'N/A'}</td>
+                <td>${report.message || 'N/A'}</td>
+                <td>
+                  ${getImageHtml(report)}
+                </td>
+                <td>${formatTimestamp(report.timestamp)}</td>
+                <td>
+                  <button class="delete-btn" onclick="openDeleteModal('${report.id}', '${petId}')">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      section.appendChild(tableDiv);
+    
+      return { section, reporterInfo };
+    }
+
+    function getImageHtml(report) {
+      // Check all possible image properties
+      const imageUrl = report.imageUri || report.imageURL || report.image || report.photo || report.photoUrl;
+      
+      if (imageUrl) {
+        return `
+          <img 
+            src="${imageUrl}" 
+            alt="Report Image" 
+            onclick="openModal('${imageUrl}')"
+            onerror="this.src='/api/placeholder/150/150'; this.onerror=null;"
+          />
+        `;
+      }
+      
+      // Return placeholder if no image
+      return `
+        <img 
+          src="/api/placeholder/150/150" 
+          alt="No Image Available" 
+          style="opacity: 0.5;"
+        />
+      `;
+    }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+    import { getDatabase, ref, onValue, get, remove } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+      authDomain: "pawtioncare.firebaseapp.com",
+      projectId: "pawtioncare",
+      storageBucket: "pawtioncare.appspot.com",
+      messagingSenderId: "522059500098",
+      appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+      measurementId: "G-HE3YMRNKVF"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Delete report function
+    window.confirmDelete = async function() {
+      if (!currentReportToDelete) return;
+      
+      const { reportId, petId } = currentReportToDelete;
+      const reportRef = ref(db, `Reports/${petId}/${reportId}`);
+      
+      try {
+        await remove(reportRef);
+        closeDeleteModal();
+      } catch (error) {
+        console.error('Error deleting report:', error);
+        alert('Failed to delete report. Please try again.');
+      }
+    };
+
+    async function updateReporterInfo(reporterInfo, userId, Report_contactNumber) {
+      const nameSpan = reporterInfo.querySelector('.reporter-name');
+      const emailSpan = reporterInfo.querySelector('.reporter-email');
+      const contactSpan = reporterInfo.querySelector('.reporter-contact');
+
+      if (userId) {
+        const userRef = ref(db, `users/${userId}`);
+        
+        try {
+          const snapshot = await get(userRef);
+          const userData = snapshot.val();
+          
+          if (userData) {
+            nameSpan.textContent = userData.fullName || 'N/A';
+            emailSpan.textContent = userData.email || 'N/A';
+          } else {
+            nameSpan.textContent = 'User not found';
+            emailSpan.textContent = 'N/A';
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          nameSpan.textContent = 'Error loading user data';
+          emailSpan.textContent = 'N/A';
+        }
+      } else {
+        nameSpan.textContent = 'Anonymous';
+        emailSpan.textContent = 'N/A';
+      }
+      
+      contactSpan.textContent = Report_contactNumber || 'N/A';
+    }
+
+    function loadReports() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const petId = urlParams.get('petId');
+      const reportsContainer = document.getElementById('reportsContainer');
+
+      if (!petId) {
+        reportsContainer.innerHTML = '<div class="report-section"><div class="report-table"><p style="text-align: center; padding: 20px;">No pet ID provided.</p></div></div>';
+        return;
+      }
+
+      const reportsRef = ref(db, `Reports/${petId}`);
+
+      onValue(reportsRef, async (snapshot) => {
+        const petReports = snapshot.val();
+        
+        if (!petReports) {
+          reportsContainer.innerHTML = '<div class="report-section"><div class="report-table"><p style="text-align: center; padding: 20px;">No reports found for this pet.</p></div></div>';
+          return;
+        }
+
+        // Group reports by reporter (userId)
+        const reportsByUser = {};
+        Object.entries(petReports).forEach(([reportId, report]) => {
+          const userId = report.userId || 'anonymous';
+          if (!reportsByUser[userId]) {
+            reportsByUser[userId] = [];
+          }
+          reportsByUser[userId].push({
+            ...report,
+            id: reportId
+          });
+        });
+
+        // Clear previous content
+        reportsContainer.innerHTML = '';
+
+        // Create a section for each reporter's reports
+        for (const [userId, reports] of Object.entries(reportsByUser)) {
+          // Sort reports by timestamp in descending order
+          reports.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+          const { section, reporterInfo } = createReportSection(userId, reports, petId);
+          reportsContainer.appendChild(section);
+
+          // Update reporter information with Report_contactNumber
+          await updateReporterInfo(reporterInfo, userId, reports[0].Report_contactNumber);
+        }
+      });
+    }
+
+    // Make confirmDelete function available globally
+    window.confirmDelete = async function() {
+      if (!currentReportToDelete) return;
+      
+      const { reportId, petId } = currentReportToDelete;
+      const reportRef = ref(db, `Reports/${petId}/${reportId}`);
+      
+      try {
+        await remove(reportRef);
+        closeDeleteModal();
+      } catch (error) {
+        console.error('Error deleting report:', error);
+        alert('Failed to delete report. Please try again.');
+      }
+    };
+
+    // Make closeDeleteModal function available globally
+    window.closeDeleteModal = function() {
+      const modal = document.getElementById('deleteModal');
+      modal.classList.remove('show');
+      currentReportToDelete = null;
+    };
+
+    // Make openDeleteModal function available globally
+    window.openDeleteModal = function(reportId, petId) {
+      const modal = document.getElementById('deleteModal');
+      currentReportToDelete = { reportId, petId };
+      modal.classList.add('show');
+    };
+
+    document.addEventListener('DOMContentLoaded', loadReports);
+  </script>
+</body>
+</html>

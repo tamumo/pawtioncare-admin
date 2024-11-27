@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Pets</title>
+    <style>
+        @font-face {
+        font-family: 'mainfont';
+        src: url(FONT1/b4.ttf);}
+   :root {
+    --primary-color: #FF6B6B;
+    --primary-dark: #FF5252;
+    --secondary-color: #4ECDC4;
+    --background-color: #f8f9fa;
+    --text-color: #2d3436;
+    --border-color: #e9ecef;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --header-height: 70px;
+    --background-light: #ffec9e;
+    --orange:#FF7C04;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.header {
+    height: var(--header-height);
+    background: linear-gradient(135deg, var(--orange), var(--orange));
+
+    color: white;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px var(--shadow-color);
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.menu-btn {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+    background: none;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.container {
+    padding: 2rem;
+    flex: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+h2 {
+    color: black;
+    font-family: mainfont;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+    position: relative;
+    padding-bottom: 0.5rem;
+
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: #374151;
+    border-radius: 2px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: #ffec9e;
+    color: rgb(8, 8, 8);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background-color: rgba(78, 205, 196, 0.05);
+}
+.pet-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px; /* Rounded edges */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    border: 2px solid var(--orange); /* Orange border */
+}
+
+
+.pet-thumbnail:hover {
+    transform: scale(1.05);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-buttons button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.action-buttons button:not(.delete-btn) {
+    background-color:#FFD66B;
+    color: rgb(5, 5, 5);
+}
+
+.action-buttons button:not(.delete-btn):hover {
+    background-color: #f7da90;
+    transform: translateY(-1px);
+}
+
+.delete-btn {
+    background-color:#EF4444;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c8584b;
+    transform: translateY(-1px);
+}
+
+/* Side Navigation Menu Section */
+.side-nav {
+    /* Main container for the side menu */
+    height: 100%; /* Full height of the viewport */
+    width: 0; /* Initially hidden */
+    position: fixed; /* Keeps the menu fixed to the viewport */
+    z-index: 1001; /* Ensures the menu is above other content */
+    top: 0; /* Starts at the top of the page */
+    left: 0; /* Aligns the menu to the left */
+    background: white; /* Background color of the side menu */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    transition: 0.3s; /* Smooth transition for open/close */
+    padding-top: var(--header-height); /* Space for the header */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-right: 4px solid #ff7c04;
+}
+
+.side-nav a {
+    /* Links inside the side menu */
+    padding: 1rem 1.5rem; /* Padding for clickable area */
+    text-decoration: none; /* Removes underline from links */
+    font-size: 0.9rem; /* Slightly smaller text size */
+    color: black; /* Default text color is black */
+    display: flex; /* Flex layout for icons and text */
+    align-items: center; /* Aligns items vertically */
+    gap: 0.75rem; /* Space between icon and text */
+    transition: 0.3s; /* Smooth hover effect */
+    border-radius: 0; /* No rounded corners initially */
+}
+
+.side-nav a:hover {
+    /* Hover state for links */
+    background-color:  #fff5eb; /* Light orange background */
+    color: black; /* Text color remains black */
+    border-radius: 8px; /* Rounded corners */
+    padding: 1rem 1.5rem; /* Ensures spacing is consistent */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect for depth */
+}
+
+.side-nav a:last-child {
+    /* Styling for the last link */
+    margin-top: auto; /* Pushes it to the bottom */
+    border-top: 1px solid #f1f5f9; /* Divider line */
+}
+
+.side-nav .close-btn {
+    /* Close button inside the side menu */
+    position: absolute; /* Positioned relative to the menu */
+    top: 1rem; /* Distance from the top */
+    right: 1rem; /* Distance from the right */
+    font-size: 2rem; /* Size of the close icon */
+    color: var(--text-color); /* Icon color */
+    cursor: pointer; /* Hand pointer for interactivity */
+    width: 40px; /* Button size */
+    height: 40px;
+    display: flex; /* Flexbox for centering */
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Circular button */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.side-nav .close-btn:hover {
+    background-color: #f1f5f9; /* Highlight on hover */
+}
+/* Style for images inside side menu links */
+.side-nav a img.side-nav-icon {
+    width: 18px; /* Adjust the width to make the image smaller */
+    height: 18px; /* Adjust the height to make the image smaller */
+    margin-right: 10px; /* Space between the icon and the text */
+}
+
+
+#pagination {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+#pagination button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--secondary-color);
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#pagination button:hover:not(:disabled) {
+    background-color: #45b7af;
+    transform: translateY(-1px);
+}
+
+#pagination button:disabled {
+    background-color: #cbd5e0;
+    cursor: not-allowed;
+}
+
+#pagination span {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1002;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h3 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.modal-buttons {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.modal-buttons button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.confirm-delete {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.confirm-delete:hover {
+    background-color: #c0392b;
+}
+
+.cancel-delete {
+    background-color:var(--orange);
+    color: white;
+}
+
+.cancel-delete:hover {
+    background-color: var(--orange);
+}
+
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 1003;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(8px);
+}
+
+.modal-image {
+    max-width: 90%;
+    max-height: 90vh;
+    margin: auto;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .header {
+        padding: 0 1rem;
+    }
+    
+    .logo {
+        font-size: 1.5rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons button {
+        width: 100%;
+    }
+    
+    th, td {
+        padding: 0.75rem;
+    }
+    
+    .pet-thumbnail {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    th, td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    .side-nav {
+        width: 100%;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+}
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <button class="menu-btn" onclick="openNav()">☰</button>
+        <div class="logo">PAWTION CARE 🐾</div>
+    </header>
+
+   
+    <div id="mySidenav" class="side-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>    
+        <a href="posting_pet_adoption.html"><img src="picture/postpet.png" alt="Post a New Pet" class="side-nav-icon">Post a New Pet for Adoption</a>
+        <a href="list_of_pets.html"><img src="picture/list.png" alt="List of Pets" class="side-nav-icon">List of Pets for Adoption</a>
+        <a href="lost_and_found.html"><img src="picture/post.png" alt="Post Lost Pet" class="side-nav-icon">Post a New Pet for Lost and Found</a>
+        <a href="missing_pets.html"><img src="picture/list.png" alt="Missing Pets" class="side-nav-icon">List of Pets for Lost and Found</a>
+        <a href="messages.html"><img src="picture/chat.png" alt="Messages" class="side-nav-icon">Messages</a>
+        <a href="success_petAdoption.html"><img src="picture/history.png" alt="History of Success Adoption" class="side-nav-icon">History of Success Pet Adoption</a>
+        <a href="reactivation.html"><img src="picture/reactivated.png" alt="Reactivation Requests" class="side-nav-icon">Reactivation Requests</a>
+        <a href="javascript:void(0)" onclick="logout()" style="margin-top: auto;"><img src="picture/logout.png" alt="Logout" class="side-nav-icon">Logout</a>
+    </div>
+    
+
+    <div class="container">
+        <h2>List of Pets Posted in Pawtion Care for Adoption</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Pet Image</th>
+                        <th>Pet Name</th>
+                        <th>Date Posted</th>
+
+                        <th>No. of Adopters</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="pets-table-body">
+                    <!-- Pet data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete this pet? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button class="confirm-delete" onclick="confirmDelete()">Delete</button>
+                <button class="cancel-delete" onclick="closeDeleteModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal">
+        <img class="modal-image" id="modalImage" src="" alt="Pet Image">
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+        import { 
+            getDatabase, 
+            ref, 
+            onValue, 
+            query, 
+            limitToFirst, 
+            orderByKey, 
+            startAfter, 
+            get,
+            remove 
+        } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+        import { getStorage, ref as storageRef, deleteObject } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-storage.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.firebaseapp.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+        const petsRef = ref(db, 'pets');
+        const petsTableBody = document.getElementById('pets-table-body');
+        const paginationContainer = document.createElement('div');
+        paginationContainer.id = 'pagination';
+        document.querySelector('.container').appendChild(paginationContainer);
+    
+        const PETS_PER_PAGE = 10;
+        let currentPage = 1;
+        let lastVisibleKey = null;
+        let totalPets = 0;
+        let petToDeleteId = null;
+        let initialLoad = true;
+    
+        // Main data listener
+        onValue(petsRef, (snapshot) => {
+            totalPets = snapshot.size || 0;
+            if (initialLoad) {
+                loadPets(1);
+                initialLoad = false;
+            }
+        });
+    
+        async function loadPets(page) {
+            petsTableBody.innerHTML = '';
+            
+            let petQuery;
+            if (page === 1) {
+                petQuery = query(petsRef, orderByKey(), limitToFirst(PETS_PER_PAGE));
+            } else {
+                petQuery = query(petsRef, orderByKey(), startAfter(lastVisibleKey), limitToFirst(PETS_PER_PAGE));
+            }
+        
+            const snapshot = await get(petQuery);
+            let count = (page - 1) * PETS_PER_PAGE + 1;
+        
+            // Get all adoption forms once to avoid multiple queries
+            const adoptionFormsRef = ref(db, 'adoption_forms');
+            const adoptionFormsSnapshot = await get(adoptionFormsRef);
+            
+            snapshot.forEach((childSnapshot) => {
+                const petData = childSnapshot.val();
+                const row = document.createElement('tr');
+                const datePosted = petData.dateAdded ? new Date(petData.dateAdded).toLocaleDateString() : 'N/A';
+                
+                // Count pending adopters for this pet
+                let pendingAdoptersCount = 0;
+                adoptionFormsSnapshot.forEach((formSnapshot) => {
+                    const formData = formSnapshot.val();
+                    if (formData.interestedPetKey === childSnapshot.key) {
+                        pendingAdoptersCount++;
+                    }
+                });
+        
+                row.innerHTML = `
+                    <td>${count++}</td>
+                    <td>
+                        <img src="${petData.imageUrl || '/placeholder-pet.jpg'}" 
+                             alt="${petData.petName}" 
+                             class="pet-thumbnail"
+                             onclick="window.openImageModal('${petData.imageUrl || '/placeholder-pet.jpg'}')"
+                        >
+                    </td>
+                    <td>${petData.petName || 'N/A'}</td>
+                    <td>${datePosted}</td>
+
+                    <td>${pendingAdoptersCount}</td>
+                    <td class="action-buttons">
+                        <button onclick="window.location.href='pet_profile.html?petId=${childSnapshot.key}'">View Profile</button>
+                        <button onclick="window.location.href='see_adopter.html?petId=${childSnapshot.key}'">View Adopters</button>
+                        <button class="delete-btn" onclick="window.openDeleteModal('${childSnapshot.key}', '${petData.imageUrl || ''}')">Delete</button>
+                    </td>
+                `;
+        
+                petsTableBody.appendChild(row);
+                lastVisibleKey = childSnapshot.key;
+            });
+        
+            updatePagination(page, snapshot.size < PETS_PER_PAGE);
+        }
+        
+        function updatePagination(currentPage, isLastPage) {
+            const totalPages = Math.ceil(totalPets / PETS_PER_PAGE);
+            paginationContainer.innerHTML = `
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>
+                <span>Page ${currentPage} of ${totalPages}</span>
+                <button onclick="changePage(${currentPage + 1})" ${isLastPage || currentPage === totalPages ? 'disabled' : ''}>Next</button>
+            `;
+        }
+        
+        async function changePage(newPage) {
+            if (newPage < 1 || newPage > Math.ceil(totalPets / PETS_PER_PAGE)) return;
+            currentPage = newPage;
+            await loadPets(currentPage);
+        }
+        
+        async function deletePet(petId, imageUrl) {
+            try {
+                // Delete from Realtime Database
+                await remove(ref(db, `pets/${petId}`));
+        
+                // Delete image from Storage if it exists
+                if (imageUrl) {
+                    const imageRef = storageRef(storage, imageUrl);
+                    try {
+                        await deleteObject(imageRef);
+                    } catch (error) {
+                        console.log('Image may have already been deleted or not found:', error);
+                    }
+                }
+        
+                alert('Pet deleted successfully');
+                
+                // Update the total number of pets
+                totalPets--;
+                
+                // Calculate maximum available pages
+                const maxPages = Math.ceil(totalPets / PETS_PER_PAGE);
+                
+                // If current page is now empty, go to previous page
+                if (currentPage > maxPages && currentPage > 1) {
+                    currentPage--;
+                }
+                
+                // Reload the current page immediately
+                await loadPets(currentPage);
+                
+            } catch (error) {
+                console.error('Error deleting pet:', error);
+                alert('Error deleting pet: ' + error.message);
+            }
+        }
+        
+        // Attach functions to global window object
+        window.changePage = changePage;
+        window.openNav = function() {
+            document.getElementById("mySidenav").style.width = "250px";
+        };
+        
+        window.closeNav = function() {
+            document.getElementById("mySidenav").style.width = "0";
+        };
+        
+
+        window.logout = function() {
+            // Close the side navigation
+            closeNav();
+            // Redirect to account.html
+            window.location.href = 'account.html';
+        };
+
+        window.openDeleteModal = function(petId, imageUrl) {
+            petToDeleteId = { id: petId, imageUrl: imageUrl };
+            document.getElementById('deleteModal').style.display = 'block';
+        };
+        
+        window.closeDeleteModal = function() {
+            document.getElementById('deleteModal').style.display = 'none';
+            petToDeleteId = null;
+        };
+        
+        window.confirmDelete = async function() {
+            if (petToDeleteId) {
+                await deletePet(petToDeleteId.id, petToDeleteId.imageUrl);
+                closeDeleteModal();
+            }
+        };
+
+        window.openImageModal = function(imageUrl) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = "block";
+            modalImg.src = imageUrl;
+        };
+        </script>
+        
+        <script>
+            // Initialize any non-module scripts here
+            document.addEventListener('DOMContentLoaded', function() {
+                // Close modals when clicking outside
+                window.onclick = function(event) {
+                    const deleteModal = document.getElementById('deleteModal');
+                    const imageModal = document.getElementById('imageModal');
+                    
+                    if (event.target === deleteModal) {
+                        closeDeleteModal();
+                    }
+                    if (event.target === imageModal) {
+                        imageModal.style.display = "none";
+                    }
+                };
+            });
+        </script>
+        </body>
+        
+        </html>

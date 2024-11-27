@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pawtion Care - Admin Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        @font-face {
+        font-family: 'mainfont';
+        src: url(FONT1/b4.ttf);}
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-color: #ff7c04;
+            --primary-light: #ff8534;
+            --primary-dark: #e66e00;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --background-light: #ffec9e;
+            --orange:#FF7C04;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .background-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+        .shape {
+            position: absolute;
+            background: var(--primary-color);
+            opacity: 0.5;
+            border-radius: 50%;
+        }
+
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            left: -200px;
+        }
+
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -150px;
+            right: -150px;
+        }
+
+        .login-card {
+            background: var(--white);
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            width: 85px;
+            height: 85px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            box-shadow: 0 8px 16px rgba(255, 124, 4, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .admin-logo {
+            width: 500%;
+            height: 500%;
+            object-fit: contain;
+        }
+
+        h1 {
+            color: var(--text-dark);
+            
+            font-size: 25px;
+            font-weight: 600;
+            margin-top: 40px;
+            text-align: center;
+            font-family: mainfont;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .input-field {
+            position: relative;
+            margin-bottom: 1.8rem;
+        }
+
+        .input-field label {
+            position: absolute;
+            left: 15px;
+            top: -10px;
+            background: var(--white);
+            padding: 0 5px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(255, 124, 4, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--orange);
+            border: none;
+            border-radius: 12px;
+            color: var(--white);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .login-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 124, 4, 0.2);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .footer {
+            margin-top: 2.5rem;
+            font-size: 13px;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .error-message {
+            background: #fff2f2;
+            color: #ff4444;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 14px;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo {
+                width: 70px;
+                height: 70px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            input {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+    
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <img src="logoAdmin.png" alt="Pawtion Care Admin Logo" class="admin-logo">
+            </div>
+
+            <h1>Pawtion Care</h1>
+            <p class="subtitle">Admin Portal</p>
+            
+            <div id="error-message" class="error-message">
+                Invalid username or password
+            </div>
+
+            <form id="loginForm" onsubmit="return validateLogin(event)">
+                <div class="input-field">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="Enter your username"
+                        required
+                    >
+                </div>
+                <div class="input-field">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Enter your password"
+                        required
+                    >
+                    <span class="password-toggle" onclick="togglePassword()">
+                        👁️
+                    </span>
+                </div>
+                <button type="submit" class="login-btn">LOGIN</button>
+            </form>
+
+            <div class="footer">
+                © Pawtion Care 2024. All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Default credentials
+        const DEFAULT_USERNAME = 'PawtionCare';
+        const DEFAULT_PASSWORD = 'PawtionCare0123';
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+        }
+
+        function validateLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            if (username === DEFAULT_USERNAME && password === DEFAULT_PASSWORD) {
+                // Successful login
+                errorMessage.style.display = 'none';
+                window.location.href = 'posting_pet_adoption.html';
+            } else {
+                // Failed login
+                errorMessage.style.display = 'block';
+            }
+
+            return false;
+        }
+    </script>
+</body>
+</html>

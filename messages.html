@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Messages</title>
+    <style>
+              @font-face {
+        font-family: 'mainfont';
+        src: url(FONT1/b4.ttf);}
+        :root {
+            --primary-color: #ff7c04;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --input-border-color: #ddd;
+            --table-header-bg: #d3743c;
+            --button-bg: #ff7c04;
+            --button-hover-bg: #cc8400;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            background-image: linear-gradient(180deg, var(--primary-color), #f39d47);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .menu-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+        }
+
+        .side-nav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+    background: white;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 60px; /* Adjust this to match your header height */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    border-right: 4px solid #ff7c04;
+}
+
+.side-nav a {
+    /* Links inside the side menu */
+    padding: 1rem 1.5rem; /* Padding for clickable area */
+    text-decoration: none; /* Removes underline from links */
+    font-size: 0.9rem; /* Slightly smaller text size */
+    color: black; /* Default text color is black */
+    display: flex; /* Flex layout for icons and text */
+    align-items: center; /* Aligns items vertically */
+    gap: 0.75rem; /* Space between icon and text */
+    transition: 0.3s; /* Smooth hover effect */
+    border-radius: 0; /* No rounded corners initially */
+}
+
+.side-nav a:hover {
+    /* Hover state for links */
+    background-color:  #fff5eb; /* Light orange background */
+    color: black; /* Text color remains black */
+    border-radius: 8px; /* Rounded corners */
+    padding: 1rem 1.5rem; /* Ensures spacing is consistent */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect for depth */
+}
+
+.side-nav a:last-child {
+    /* Styling for the last link */
+    margin-top: auto; /* Pushes it to the bottom */
+    border-top: 1px solid #f1f5f9; /* Divider line */
+}
+
+.side-nav .close-btn {
+    position: absolute;
+    top: 10px; /* Adjust distance from top */
+    right: 10px; /* Adjust distance from right */
+    font-size: 2rem;
+    color: var(--text-color);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    z-index: 1002;
+}
+
+.side-nav .close-btn:hover {
+    background-color: #f1f5f9; /* Highlight on hover */
+}
+/* Style for images inside side menu links */
+.side-nav a img.side-nav-icon {
+    width: 18px; /* Adjust the width to make the image smaller */
+    height: 18px; /* Adjust the height to make the image smaller */
+    margin-right: 10px; /* Space between the icon and the text */
+}
+
+
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+           
+        }
+
+        h1 {
+            text-align: center;
+            color: black;
+            margin: 20px 0;
+            font-family: mainfont;
+        }
+
+        .message-list {
+            width: 100%;
+        }
+
+        .message-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(65, 56, 56, 0.1);
+            margin-bottom: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-left: 4px solid #ff7c04;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+            
+        }
+
+        .message-header h3 {
+            color: var(--primary-color);
+        }
+
+        .message-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .message-item h3 {
+            color: black;
+            margin-bottom: 5px;
+        }
+
+        .message-preview {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message-full {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .message-full p {
+            margin-bottom: 5px;
+        }
+
+        .expanded .message-preview {
+            display: none;
+        }
+
+        .expanded .message-full {
+            display: block;
+        }
+
+        .delete-btn {
+            background-color: #EF4444;
+            color: rgb(255, 255, 255);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .delete-btn:hover {
+            background-color: #f06f6f;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Updated Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2rem;
+            color: #333;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s, color 0.3s;
+            border: none;
+            background: none;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            background-color: #f0f0f0;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+                margin-bottom: 10px;
+            }
+
+            .menu-btn {
+                align-self: flex-start;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .container {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .side-nav {
+                width: 100%;
+            }
+
+            .message-item {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="menu-btn" onclick="openNav()">☰</button>
+        <div class="logo">PAWTION CARE 🐾</div>
+    </header>
+
+    <div id="mySidenav" class="side-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>    
+        <a href="posting_pet_adoption.html"><img src="picture/postpet.png" alt="Post a New Pet" class="side-nav-icon">Post a New Pet for Adoption</a>
+        <a href="list_of_pets.html"><img src="picture/list.png" alt="List of Pets" class="side-nav-icon">List of Pets for Adoption</a>
+        <a href="lost_and_found.html"><img src="picture/post.png" alt="Post Lost Pet" class="side-nav-icon">Post a New Pet for Lost and Found</a>
+        <a href="missing_pets.html"><img src="picture/list.png" alt="Missing Pets" class="side-nav-icon">List of Pets for Lost and Found</a>
+        <a href="messages.html"><img src="picture/chat.png" alt="Messages" class="side-nav-icon">Messages</a>
+        <a href="success_petAdoption.html"><img src="picture/history.png" alt="History of Success Adoption" class="side-nav-icon">History of Success Pet Adoption</a>
+        <a href="reactivation.html"><img src="picture/reactivated.png" alt="Reactivation Requests" class="side-nav-icon">Reactivation Requests</a>
+        <a href="javascript:void(0)" onclick="logout()" style="margin-top: auto;"><img src="picture/logout.png" alt="Logout" class="side-nav-icon">Logout</a>
+    </div>
+    <div class="container">
+        <h1>Hi Admin, these are your messages</h1>
+        <div class="message-list" id="message-container">
+            <!-- Messages will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Updated Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <h2 id="modalSubject"></h2>
+            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+            <p><strong>Message:</strong> <span id="modalMessage"></span></p>
+            <p><strong>Received:</strong> <span id="modalTimestamp"></span></p>
+            <button id="modalDeleteBtn" class="delete-btn">Delete</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+        import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.firebaseapp.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const dbRef = ref(database, 'ContactUsMessages');
+
+        // Delete message function
+        window.deleteMessage = function(id, event) {
+            event.stopPropagation();
+            const messageRef = ref(database, `ContactUsMessages/${id}`);
+            remove(messageRef)
+                .then(() => {
+                    console.log(`Message with ID ${id} has been deleted`);
+                    document.getElementById(`message-${id}`).remove();
+                })
+                .catch((error) => {
+                    console.error('Error deleting message:', error);
+                });
+        };
+
+        // Updated Modal Functions
+        window.openModal = function(subject, email, message, timestamp, id) {
+            document.getElementById("modalSubject").textContent = subject;
+            document.getElementById("modalEmail").textContent = email;
+            document.getElementById("modalMessage").textContent = message;
+            document.getElementById("modalTimestamp").textContent = new Date(timestamp).toLocaleString();
+            const modal = document.getElementById("messageModal");
+            modal.classList.add('show');
+
+            // Add event listener for clicking outside modal
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+
+            const modalDeleteBtn = document.getElementById("modalDeleteBtn");
+            modalDeleteBtn.onclick = function(event) {
+                deleteMessage(id, event);
+                closeModal();
+            };
+
+            // Add escape key listener
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        };
+
+        window.closeModal = function() {
+            const modal = document.getElementById("messageModal");
+            modal.classList.remove('show');
+        };
+
+        function displayMessages(messages) {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.innerHTML = '';
+
+            Object.entries(messages).forEach(([id, msg]) => {
+                const messageItem = document.createElement('div');
+                messageItem.className = 'message-item';
+                messageItem.id = `message-${id}`;
+                messageItem.onclick = () => openModal(msg.subject, msg.email, msg.message, msg.timestamp, id);
+
+                const previewText = msg.message.length > 50 ? msg.message.substring(0, 50) + '...' : msg.message;
+
+                messageItem.innerHTML = `
+                    <div class="message-header">
+                        <h3>${msg.name}</h3>
+                        <div class="timestamp">${new Date(msg.timestamp).toLocaleString()}</div>
+                    </div>
+                    <div class="message-preview">${previewText}</div>
+                `;
+
+                messageContainer.appendChild(messageItem);
+            });
+        }
+
+        onValue(dbRef, (snapshot) => {
+            const messages = snapshot.val();
+            if (messages) {
+                displayMessages(messages);
+            } else {
+                const messageContainer = document.getElementById('message-container');
+                messageContainer.innerHTML = '<p>No messages found.</p>';
+            }
+        });
+
+        window.openNav = function() {
+            document.getElementById("mySidenav").style.width = window.innerWidth <= 480 ? "100%" : "250px";
+        };
+
+        window.closeNav = function() {
+            document.getElementById("mySidenav").style.width = "0";
+        };
+
+        window.logout = function() {
+            closeNav();
+            window.location.href = 'account.html';
+        };
+    </script>
+</body>
+</html>

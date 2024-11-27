@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Pet Adoption Activities</title>
+    <style>
+       @font-face {
+    font-family: 'pdfont';
+    src: url(FONT1/b4.ttf);
+}
+
+:root {
+    --primary-color: #ff7c04;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --input-border-color: #ddd;
+    --table-header-bg: #d3743c;
+    --table-even-row: #f8f8f8;
+    --button-bg: #ff6600;
+    --button-hover-bg: #cc8400;
+    --header-height: 60px; /* For side nav padding-top */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: white;
+            color: var(--text-color);
+           
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff7c04, #ff9642);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed; /* Fixed position at the top */
+  
+    left: 0; /* Align to the left edge */
+    width: 100%; /* Full width */
+    z-index: 1000; /* Keeps it above other content */
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+.menu-btn {
+    font-size: 2rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: white;
+}
+
+h1 {
+    text-align: center;
+    color: black;
+    font-size: 1.75rem;  /* Slightly smaller font size */
+    margin: 57px 0 20px 0; /* Increased top margin to push it down */
+    font-family: pdfont; /* Custom font */
+}
+.container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-x: auto;
+    flex-grow: 1;
+}
+
+table {
+    width: 95%;
+    margin: 20px auto;
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: 3px solid #ff7c04;
+    border-radius: 8px;
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border: none;
+}
+
+th {
+    background-color: #ffec9e;
+    color: #374151;
+    font-weight: bold;
+    border-bottom: 3px solid #ff7c04;
+}
+
+tr {
+    border-bottom: 2px solid #ff7c04;
+}
+
+td:first-child, th:first-child {
+    border-right: none;
+}
+
+tr:last-child {
+    border-bottom: none;
+}
+
+tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.address-cell {
+    max-width: 300px;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* Side Navigation Menu Section */
+.side-nav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+    background: white;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: var(--header-height);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    border-right: 4px solid #ff7c04;
+}
+
+.side-nav a {
+    padding: 1rem 1.5rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: black;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: 0.3s;
+    border-radius: 0;
+}
+
+.side-nav a:hover {
+    background-color: #fff5eb;
+    color: black;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.side-nav a:last-child {
+    margin-top: auto;
+    border-top: 1px solid #f1f5f9;
+}
+
+.side-nav .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    color: var(--text-color);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.side-nav .close-btn:hover {
+    background-color: #f1f5f9;
+}
+
+.side-nav a img.side-nav-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    gap: 15px;
+}
+
+.pagination button {
+    padding: 10px 20px;
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#pageInfo {
+    margin: 0 10px;
+    font-size: 1.1rem;
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+    .address-cell {
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    th, td {
+        padding: 12px 10px;
+    }
+
+    .pagination {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .side-nav {
+        width: 100%;
+    }
+
+    .pagination button {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+    </style>`
+</head>
+<body>
+    <header class="header">
+        <button class="menu-btn" onclick="openNav()">☰</button>
+        <div class="logo">PAWTION CARE 🐾</div>
+    </header>
+
+    <div id="mySidenav" class="side-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>    
+        <a href="posting_pet_adoption.html"><img src="picture/postpet.png" alt="Post a New Pet" class="side-nav-icon">Post a New Pet for Adoption</a>
+        <a href="list_of_pets.html"><img src="picture/list.png" alt="List of Pets" class="side-nav-icon">List of Pets for Adoption</a>
+        <a href="lost_and_found.html"><img src="picture/post.png" alt="Post Lost Pet" class="side-nav-icon">Post a New Pet for Lost and Found</a>
+        <a href="missing_pets.html"><img src="picture/list.png" alt="Missing Pets" class="side-nav-icon">List of Pets for Lost and Found</a>
+        <a href="messages.html"><img src="picture/chat.png" alt="Messages" class="side-nav-icon">Messages</a>
+        <a href="success_petAdoption.html"><img src="picture/history.png" alt="History of Success Adoption" class="side-nav-icon">History of Success Pet Adoption</a>
+        <a href="reactivation.html"><img src="picture/reactivated.png" alt="Reactivation Requests" class="side-nav-icon">Reactivation Requests</a>
+        <a href="javascript:void(0)" onclick="logout()" style="margin-top: auto;"><img src="picture/logout.png" alt="Logout" class="side-nav-icon">Logout</a>
+    </div>
+
+
+
+
+
+
+    <div class="container">
+        <h1>Success Pet Adoption Activities</h1>
+        <table id="adoption-table">
+            <thead>
+                <tr>
+                    <th>Pet Name</th>
+                    <th>Species</th>
+                    <th>Breed</th>
+                    <th>Owner Name</th>
+                    <th>Complete Address</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Adoption Date</th>
+                </tr>
+            </thead>
+            <tbody id="adoption-list">
+                <!-- Adoption data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <button id="prevBtn" onclick="changePage(-1)" disabled>Previous</button>
+        <span id="pageInfo">Page 1 of 1</span>
+        <button id="nextBtn" onclick="changePage(1)">Next</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+        
+        // Firebase config remains the same
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.firebaseapp.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let allAdoptions = [];
+        
+        function formatAddress(addressData) {
+            if (!addressData) return 'N/A';
+            
+            const addressParts = [];
+            
+            // Add each address component if it exists
+            if (addressData.blockLot) addressParts.push(addressData.blockLot);
+            if (addressData.streetName) addressParts.push(addressData.streetName);
+            if (addressData.barangay) addressParts.push(addressData.barangay);
+            if (addressData.municipality) addressParts.push(addressData.municipality);
+            if (addressData.province) addressParts.push(addressData.province);
+            if (addressData.region) addressParts.push(addressData.region);
+            
+            // Always add Philippines as the country
+            if (addressParts.length > 0) addressParts.push('Philippines');
+            
+            return addressParts.length > 0 ? addressParts.join(', ') : 'N/A';
+        }
+        
+        function createAdoptionRow(adoption) {
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>${adoption.petName || 'N/A'}</td>
+                <td>${adoption.species || 'N/A'}</td>
+                <td>${adoption.breed || 'N/A'}</td>
+                <td>${adoption.ownerName || 'N/A'}</td>
+                <td class="address-cell">${adoption.formattedAddress || 'N/A'}</td>
+                <td>${adoption.contact || 'N/A'}</td>
+                <td>${adoption.email || 'N/A'}</td>
+                <td>${adoption.adoptionDate || 'N/A'}</td>
+            `;
+            return row;
+        }
+        
+        function displayAdoptions(page) {
+            const adoptionList = document.getElementById('adoption-list');
+            adoptionList.innerHTML = '';
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageAdoptions = allAdoptions.slice(start, end);
+        
+            pageAdoptions.forEach(adoption => {
+                adoptionList.appendChild(createAdoptionRow(adoption));
+            });
+        
+            updatePagination();
+        }
+        
+        async function fetchAdoptionForm(adopterId, adoptionData) {
+            try {
+                const allFormsRef = ref(db, 'adoption_forms');
+                const allFormsSnapshot = await get(allFormsRef);
+                
+                if (allFormsSnapshot.exists()) {
+                    const forms = allFormsSnapshot.val();
+                    // Find the exact matching form based on multiple criteria
+                    for (const [formId, form] of Object.entries(forms)) {
+                        if (
+                            // Match by email exactly
+                            (form.adopters_email === adoptionData.email && form.interestedPetName === adoptionData.petName) ||
+                            // Match by name and pet name
+                            (form.adoptersName === adoptionData.ownerName && form.interestedPetName === adoptionData.petName) ||
+                            // Match by form ID
+                            formId === adopterId
+                        ) {
+                            return form;
+                        }
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.error("Error fetching adoption form:", error);
+                return null;
+            }
+        }
+
+        async function fetchSuccessfulAdoptions() {
+            const adoptionsRef = ref(db, 'successful_adoptions');
+        
+            onValue(adoptionsRef, async (snapshot) => {
+                if (snapshot.exists()) {
+                    const adoptionsData = snapshot.val();
+                    allAdoptions = [];
+        
+                    for (const [key, adoption] of Object.entries(adoptionsData)) {
+                        try {
+                            const formData = await fetchAdoptionForm(key, adoption);
+                            
+                            let formattedAddress = 'N/A';
+                            if (formData) {
+                                const addressParts = [
+                                    formData.blockLot,
+                                    formData.streetName,
+                                    formData.barangay,
+                                    formData.municipality,
+                                    formData.province,
+                                    formData.region,
+                                    'Philippines'
+                                ].filter(Boolean); // Remove empty values
+                                
+                                formattedAddress = addressParts.length > 0 ? addressParts.join(', ') : 'N/A';
+                            }
+        
+                            allAdoptions.push({
+                                ...adoption,
+                                formattedAddress
+                            });
+                        } catch (error) {
+                            console.error(`Error processing adoption ${key}:`, error);
+                            allAdoptions.push({
+                                ...adoption,
+                                formattedAddress: 'N/A'
+                            });
+                        }
+                    }
+        
+                    allAdoptions.sort((a, b) => new Date(b.adoptionDate || 0) - new Date(a.adoptionDate || 0));
+                    displayAdoptions(currentPage);
+                } else {
+                    const adoptionList = document.getElementById('adoption-list');
+                    adoptionList.innerHTML = '<tr><td colspan="8">No successful adoptions recorded yet.</td></tr>';
+                }
+            }, (error) => {
+                console.error("Error fetching successful adoptions:", error);
+                const adoptionList = document.getElementById('adoption-list');
+                const errorRow = document.createElement('tr');
+                errorRow.innerHTML = '<td colspan="8">Error fetching adoption data. Please try again later.</td>';
+                adoptionList.appendChild(errorRow);
+            });
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(allAdoptions.length / itemsPerPage);
+            document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        }
+        
+        window.changePage = function(direction) {
+            currentPage += direction;
+            displayAdoptions(currentPage);
+        };
+
+        window.openNav = function() {
+            document.getElementById("mySidenav").style.width = "250px";
+        };
+
+        window.closeNav = function() {
+            document.getElementById("mySidenav").style.width = "0";
+        };
+
+        window.logout = function() {
+            closeNav();
+            window.location.href = 'account.html';
+        };
+
+        // Initialize the page
+        fetchSuccessfulAdoptions();
+    </script>
+</body>
+</html>

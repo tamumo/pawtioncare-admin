@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>See Possible Pet Parent Adopters</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-functions.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            padding-bottom: 100px;
+        }
+
+        .adopter-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            padding: 2rem;
+            transition: transform 0.2s;
+        }
+
+        .adopter-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-image: linear-gradient(135deg, #ff7c04, #ff9642);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .back-button:hover {
+            opacity: 0.9;
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background-image: linear-gradient(135deg, #ff8534, #ffa76a);
+        }
+        
+        .back-button:before {
+            content: "←";
+            font-size: 1.2em;
+            line-height: 1;
+        } 
+
+        .card-header {
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .document-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .document-column {
+            background-color: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .document-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .document-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .document-image:hover {
+            transform: scale(1.02);
+        }
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: -2rem;
+            right: -2rem;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-width: 130px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-approve {
+            background: linear-gradient(145deg, #12b981, #059669);
+            color: white;
+        }
+        
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-reject {
+            background: linear-gradient(145deg, #f87171, #dc2626);
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-pending {
+            background: linear-gradient(145deg, #fbbf24, #d97706);
+            color: white;
+        }
+        
+        .btn-pending:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+
+
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .status-approved {
+            background-color: #FFD66B;
+            color:black;
+        }
+
+        .status-rejected {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .remove-pet-btn {
+            background-color: #EF4444;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem auto;
+            display: block;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+
+        .remove-pet-btn:hover {
+            background-color: #e77d7d;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .adopter-card {
+                padding: 1rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .document-images {
+                grid-template-columns: 1fr;
+
+            }
+            .back-button {
+                padding: 10px 20px;
+                font-size: 14px;
+                bottom: 20px;
+            }
+
+            .remove-pet-btn + .back-button {
+                bottom: 90px;
+            }
+        
+        }
+
+        /* Approval Modal Styles */
+        .approval-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .approval-modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            flex: 1;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-btn-submit {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .modal-btn-cancel {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #10b981;
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center text-gray-900 mb-8">Possible Pet Parent Adopters</h1>
+        <div id="adopter-list"></div>
+        <button id="remove-pet-btn" class="remove-pet-btn">Finished adoption process? Remove pet from adoption list</button>   
+        <button class="back-button" id="backButton">Back</button>
+    </div>
+
+  
+     
+      
+    
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="image-modal">
+        <span class="close-modal">&times;</span>
+        <div class="modal-content">
+            <img id="modal-image" class="modal-image" src="" alt="Document">
+        </div>
+    </div>
+
+    <!-- Approval Modal -->
+    <div id="approval-modal" class="approval-modal">
+        <div class="approval-modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title">Approve Adopter</h2>
+            </div>
+            <div class="form-group">
+                <label for="approval-date" class="form-label">Date:</label>
+                <input type="date" id="approval-date" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label for="approval-time" class="form-label">Time:</label>
+                <input type="time" id="approval-time" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label for="approval-location" class="form-label">Location:</label>
+                <input type="text" id="approval-location" class="form-input" placeholder="Enter location" required>
+            </div>
+            <div class="form-group">
+                <label for="approval-message" class="form-label">Message:</label>
+                <textarea id="approval-message" class="form-input" placeholder="Enter message" rows="3"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button id="submit-btn" class="modal-btn modal-btn-submit">Submit</button>
+                <button id="cancel-btn" class="modal-btn modal-btn-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+        import { getDatabase, ref, onValue, update, remove, push, set, get } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+        import { getStorage, ref as storageRef, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-storage.js";
+//        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-functions.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-analytics.js";
+//        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-messaging.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.fireba}.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+        const storage = getStorage(app);
+//        const messaging = getMessaging(app);
+
+//        const vapid = `BEjQfBDjsx6bjipT-QEvyFeAYdfVBz239gDJqBxKpmF3RxlEkkpImCo_nvbg6ECuq2IIynR_KqQ71wCMvoMW7Gw`;
+        
+        // Initialize image modal functionality
+        const imageModal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+        const closeModal = document.querySelector('.close-modal');
+
+        function openImageModal(imageUrl) {
+            modalImage.src = imageUrl;
+            imageModal.style.display = 'flex';
+        }
+
+        closeModal.onclick = function() {
+            imageModal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target === imageModal) {
+                imageModal.style.display = 'none';
+            }
+        }
+
+        // Function to create status badge
+        function createStatusBadge(status) {
+            const statusClasses = {
+                approved: 'status-approved',
+                rejected: 'status-rejected',
+                pending: 'status-pending'
+            };
+            return `<span class="status-badge ${statusClasses[status] || 'status-pending'}">${status}</span>`;
+        }
+    
+    // Function to create adopter card
+    function createAdopterCard(adopter) {
+        const card = document.createElement('div');
+        card.className = 'adopter-card';
+
+        const adoptersName = adopter.adoptersName || 'Name not specified';
+        const age = adopter.age || 'Age not specified';
+        
+        const addressComponents = [
+            adopter.blockLot,
+            adopter.streetName,
+            adopter.barangay,
+            adopter.municipality,
+            adopter.province,
+            adopter.region,
+            "Philippines"  // Always include Philippines as the country
+        ].filter(Boolean);  // Remove any undefined or empty components
+
+        const address = addressComponents.length > 1 ? addressComponents.join(', ') : 'Address not specified';
+        const contactNumber = adopter.contactNumber || 'Contact number not specified';
+        const adoptersEmail = adopter.adopters_email || 'Email not specified';
+        const householdType = adopter.householdType || 'Household type not specified';
+        const numberOfPets = adopter.numberOfPets || 'Number of pets not specified';
+        const employmentStatus = adopter.employmentStatus || 'Employment status not specified';
+        const interestedPetName = adopter.interestedPetName || 'Pet not specified';
+        const status = adopter.status || 'Status not specified';
+
+        const isApproved = adopter.status === 'approved';
+        const buttonDisabledClass = isApproved ? 'disabled' : '';
+
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'document-images';
+
+        const validIdColumn = document.createElement('div');
+        validIdColumn.className = 'document-column';
+        validIdColumn.innerHTML = '<h3>VALID ID</h3>';
+
+        const barangayClearanceColumn = document.createElement('div');
+        barangayClearanceColumn.className = 'document-column';
+        barangayClearanceColumn.innerHTML = '<h3>BARANGAY CLEARANCE</h3>';
+
+        card.innerHTML = `
+        <p><strong>Name:</strong> ${adoptersName}</p>
+        <p><strong>Age:</strong> ${age}</p>
+        <p><strong>Address:</strong> ${address}</p>
+        <p><strong>Contact:</strong> ${contactNumber}</p>
+        <p><strong>Email:</strong> ${adoptersEmail}</p>
+        <p><strong>Household Type:</strong> ${householdType}</p>
+        <p><strong>Number of Pets:</strong> ${numberOfPets}</p>
+        <p><strong>Employment Status:</strong> ${employmentStatus}</p>
+        <p><strong>Interested in Pet:</strong> ${interestedPetName}</p>
+        <p><strong>Status:</strong> ${createStatusBadge(status || 'pending')}</p>
+        <div class="buttons">
+            <button class="btn btn-approve ${buttonDisabledClass}" onclick="handleApproval('${adopter.id}', ${isApproved})">
+                <i class="fas fa-check"></i> ${isApproved ? 'Edit Approval' : 'Approve'}
+            </button>
+            <button class="btn btn-reject" onclick="handleStatusChange('${adopter.id}', 'rejected', ${isApproved})">
+                <i class="fas fa-times"></i> Reject
+            </button>
+        </div>`;
+
+        if (adopter.validIdUrl) {
+            const validIdImg = createImageElement(adopter.validIdUrl, 'Valid ID');
+            validIdColumn.appendChild(validIdImg);
+        }
+
+        if (adopter.brgyClearanceUrl) {
+            const brgyClearanceImg = createImageElement(adopter.brgyClearanceUrl, 'Barangay Clearance');
+            barangayClearanceColumn.appendChild(brgyClearanceImg);
+        }
+
+        imageContainer.appendChild(validIdColumn);
+        imageContainer.appendChild(barangayClearanceColumn);
+        card.appendChild(imageContainer);
+
+        return card;
+    }
+
+    function createImageElement(url, altText) {
+        const img = document.createElement('img');
+        img.className = 'document-image cursor-pointer transition-transform duration-300 hover:scale-105';
+        img.alt = altText;
+        img.onclick = () => openImageModal(img.src);
+        
+        getDownloadURL(storageRef(storage, url))
+            .then((downloadURL) => {
+                img.src = downloadURL;
+            })
+            .catch((error) => {
+                console.error("Error fetching image:", error);
+                img.alt = "Error loading image";
+            });
+        return img;
+    }
+
+    window.handleStatusChange = function(adopterId, newStatus, isApproved) {
+        window.handleStatusChange = function(adopterId, newStatus, isApproved) {
+            let confirmMessage = `Are you sure you want to ${newStatus === 'rejected' ? 'reject' : 'approve'} this application?`;
+            
+            if (isApproved) {
+                confirmMessage = `This application is currently approved. Are you sure you want to ${newStatus === 'rejected' ? 'reject' : 'update'} it?`;
+            }
+        
+            if (confirm(confirmMessage)) {
+                updateStatus(adopterId, newStatus);
+            }
+        };
+    }
+
+    // Function to update adopter status
+// Replace the updateStatus function:
+window.updateStatus = function(adopterId, status, approvalDetails = null) {
+    const adopterRef = ref(db, `adoption_forms/${adopterId}`);
+    const updateData = { 
+        status: status,
+        adoptionStatus: status
+    };
+    
+    if (approvalDetails && status === 'approved') {
+        updateData.approvalDetails = approvalDetails;
+    }
+    
+    update(adopterRef, updateData)
+        .then(() => {
+            console.log(`Status updated successfully to ${status} for adopterId: ${adopterId}`);
+            document.getElementById('approval-modal').style.display = 'none';
+            fetchAdopters(petId);
+        })
+        .catch((error) => {
+            console.error('Error in updateStatus:', error);
+            alert('Error updating adoption status. Please try again.');
+        });
+}
+
+    // Handle approval button click
+    let currentAdopterId = null;
+    let isEditing = false;
+
+    window.handleApproval = function(adopterId, isApproved) {
+        currentAdopterId = adopterId;
+        isEditing = isApproved;
+        const modalTitle = document.getElementById('modal-title');
+        const submitBtn = document.getElementById('submit-btn');
+
+        if (isEditing) {
+            if (confirm("You have already approved this application. Do you want to edit the approval details?")) {
+                modalTitle.textContent = 'Edit Approval Details';
+                submitBtn.textContent = 'Update';
+                fetchApprovalDetails(adopterId);
+                document.getElementById('approval-modal').style.display = 'flex';
+            }
+        } else {
+            modalTitle.textContent = 'Approve Adopter';
+            submitBtn.textContent = 'Submit';
+            document.getElementById('approval-date').value = '';
+            document.getElementById('approval-time').value = '';
+            document.getElementById('approval-location').value = '';
+            document.getElementById('approval-message').value = '';
+            document.getElementById('approval-modal').style.display = 'flex';
+        }
+    };
+
+    function fetchApprovalDetails(adopterId) {
+        const adopterRef = ref(db, `adoption_forms/${adopterId}`);
+        onValue(adopterRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.approvalDetails) {
+                document.getElementById('approval-date').value = data.approvalDetails.date || '';
+                document.getElementById('approval-time').value = data.approvalDetails.time || '';
+                document.getElementById('approval-location').value = data.approvalDetails.location || '';
+                document.getElementById('approval-message').value = data.approvalDetails.message || '';
+            }
+        }, {
+            onlyOnce: true
+        });
+    }
+
+    // Function to check if pet is adopted
+    function isPetAdopted(adopters) {
+        return Array.isArray(adopters) && adopters.some(adopter => 
+            adopter && adopter.status === 'approved'
+        );
+    }
+    
+
+    // Function to toggle remove pet button visibility
+// Replace the toggleRemovePetButton function:
+function toggleRemovePetButton(adopters) {
+    const removePetBtn = document.getElementById('remove-pet-btn');
+    if (removePetBtn) {
+        // Make sure adopters is an array and has at least one approved adoption
+        const hasApprovedAdopter = Array.isArray(adopters) && 
+            adopters.some(adopter => adopter && adopter.status === 'approved');
+        
+        removePetBtn.style.display = hasApprovedAdopter ? 'block' : 'none';
+    }
+}
+
+
+
+    function goBack() {
+        window.history.back();
+    }
+
+            // Add function to record successful adoption
+            async function recordSuccessfulAdoption(petId, adopterId) {
+                try {
+                    const db = getDatabase();
+                    
+                    // Get pet details
+                    const petRef = ref(db, `pets/${petId}`);
+                    const petSnapshot = await get(petRef);
+                    const petData = petSnapshot.val();
+    
+                    // Get adopter details
+                    const adopterRef = ref(db, `adoption_forms/${adopterId}`);
+                    const adopterSnapshot = await get(adopterRef);
+                    const adopterData = adopterSnapshot.val();
+    
+                    if (!petData || !adopterData) {
+                        throw new Error('Pet or adopter data not found');
+                    }
+    
+                    // Create success adoption record
+                    const successRef = ref(db, 'successful_adoptions');
+                    const newSuccessRef = push(successRef);
+                    
+                    const today = new Date();
+                    const adoptionDate = today.toISOString().split('T')[0];
+    
+                    await set(newSuccessRef, {
+                        petName: petData.name,
+                        species: petData.species,
+                        breed: petData.breed,
+                        ownerName: adopterData.adoptersName,
+                        contact: adopterData.contactNumber,
+                        email: adopterData.adopters_email,
+                        adoptionDate: adoptionDate,
+                        timestamp: today.toISOString()
+                    });
+    
+                    return true;
+                } catch (error) {
+                    console.error('Error recording successful adoption:', error);
+                    return false;
+                }
+            }
+
+
+    // Function to remove pet from adoption list
+// Replace the removePetFromAdoptionList function:
+// Modify the removePetFromAdoptionList function to only use successful_adoptions:
+async function removePetFromAdoptionList(petId) {
+    try {
+        const db = getDatabase();
+        
+        // Get pet and adoption data
+        const petRef = ref(db, `pets/${petId}`);
+        const adoptionsRef = ref(db, 'adoption_forms');
+        
+        const [petSnapshot, adoptionsSnapshot] = await Promise.all([
+            get(petRef),
+            get(adoptionsRef)
+        ]);
+        
+        if (!petSnapshot.exists()) {
+            alert('Pet not found in the database.');
+            return;
+        }
+
+        const petData = petSnapshot.val();
+        let approvedAdopter = null;
+
+        // Find the approved adopter
+        adoptionsSnapshot.forEach((childSnapshot) => {
+            const adoption = childSnapshot.val();
+            if (adoption.interestedPetKey === petId && adoption.status === 'approved') {
+                approvedAdopter = { ...adoption, id: childSnapshot.key };
+            }
+        });
+
+        if (!approvedAdopter) {
+            alert('No approved adoption found for this pet.');
+            return;
+        }
+
+        // Create successful adoption record with matched field names
+        const successRef = ref(db, 'successful_adoptions');
+        const newSuccessRef = push(successRef);
+        
+        const today = new Date();
+        const adoptionRecord = {
+            petName: petData.name || petData.petName || 'Unknown',
+            species: petData.species || 'Unknown',
+            breed: petData.breed || 'Unknown',
+            ownerName: approvedAdopter.adoptersName || 'Unknown',
+            contact: approvedAdopter.contactNumber || 'Unknown',
+            email: approvedAdopter.adopters_email || 'Unknown',
+            adoptionDate: today.toISOString().split('T')[0]
+        };
+
+        // Save to database
+        await Promise.all([
+            set(newSuccessRef, adoptionRecord),
+            remove(petRef)
+        ]);
+
+        // Show success message and redirect
+        alert('Pet successfully removed and adoption recorded.');
+        window.location.href = 'success_petAdoption.html';
+
+    } catch (error) {
+        console.error('Error in removePetFromAdoptionList:', error);
+        alert('Error processing adoption. Please try again.');
+    }
+}
+
+// Update the event listener
+document.getElementById('remove-pet-btn').addEventListener('click', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const petId = urlParams.get('petId');
+    
+    if (petId && confirm('Are you sure you want to remove this pet from the adoption list? This action cannot be undone.')) {
+        removePetFromAdoptionList(petId);
+    }
+});
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const approvalDateInput = document.getElementById('approval-date');
+        const approvalTimeInput = document.getElementById('approval-time');
+
+        // Set min attribute for date input to today's date
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0];
+        approvalDateInput.min = todayString;
+
+        // Function to validate date and time
+        function validateDateTime() {
+            const selectedDate = new Date(document.getElementById('approval-date').value + 'T' + document.getElementById('approval-time').value);
+            const now = new Date();
+        
+            if (selectedDate <= now) {
+                alert("Please select a future date and time.");
+                return false;
+            }
+            return true;
+        }
+
+        // Handle approval modal submit
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            const date = document.getElementById('approval-date').value;
+            const time = document.getElementById('approval-time').value;
+            const location = document.getElementById('approval-location').value;
+            const message = document.getElementById('approval-message').value;
+        
+            if (date && time && location) {
+                if (validateDateTime()) {
+                    const approvalDetails = {
+                        date,
+                        time,
+                        location,
+                        message,
+                        status: 'approved'
+                    };
+                    updateStatus(currentAdopterId, 'approved', approvalDetails);
+                }
+            } else {
+                alert("Date, time, and location are required fields.");
+            }
+        });
+
+        // Hide the modal when the "Cancel" button is clicked
+        document.getElementById('cancel-btn').addEventListener('click', function () {
+            document.getElementById('approval-modal').style.display = 'none';
+        });
+    });
+
+    // Fetch and display adopters for a specific pet
+// Update the fetchAdopters function:
+// Update the fetchAdopters function:
+function fetchAdopters(petId) {
+    const adopterList = document.getElementById('adopter-list');
+    const adoptionsRef = ref(db, 'adoption_forms');
+    
+    onValue(adoptionsRef, (snapshot) => {
+        adopterList.innerHTML = '';
+        let adopters = [];
+
+        snapshot.forEach((childSnapshot) => {
+            const adopter = {
+                ...childSnapshot.val(),
+                id: childSnapshot.key
+            };
+            
+            if (adopter.interestedPetKey === petId) {
+                adopterList.appendChild(createAdopterCard(adopter));
+                adopters.push(adopter);
+            }
+        });
+
+        if (adopters.length === 0) {
+            adopterList.innerHTML = '<p>No adoption applications for this pet yet.</p>';
+        }
+
+        // Update visibility of remove button based on adopters array
+        toggleRemovePetButton(adopters);
+    });
+}
+
+    // Get the petId from the URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const petId = urlParams.get('petId');
+
+// Uncomment and update this section (around line 937):
+if (petId) {
+    fetchAdopters(petId);
+} else {
+    document.getElementById('adopter-list').innerHTML = '<p>No pet selected. Please choose a pet to view its adopters.</p>';
+}
+
+    window.goBack = function() {
+        window.history.back();
+    }
+
+    // Add event listener to back button
+    document.addEventListener('DOMContentLoaded', function() {
+        const backButton = document.getElementById('backButton');
+        if (backButton) {
+            backButton.addEventListener('click', goBack);
+        }
+    });
+
+</script>
+</body>
+</html>

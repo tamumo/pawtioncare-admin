@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Add Lost Pet</title>
+    <style>
+              @font-face {
+        font-family: 'mainfont';
+        src: url(FONT1/b4.ttf);}
+        :root {
+            --primary-color: #ff7c04;
+            --primary-dark: #e66c00;
+            --background-color: #f8f9fa;
+            --text-color: #2d3436;
+            --input-border-color: #e1e4e8;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: white;
+            color: var(--text-color);
+           
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff7c04, #ff9642);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .menu-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .side-nav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+    background: white;
+    overflow-x: hidden;
+    transition: 0.3s;
+    padding-top: 60px; /* Adjust this to match your header height */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    border-right: 4px solid #ff7c04;
+}
+.side-nav a {
+    /* Links inside the side menu */
+    padding: 1rem 1.5rem; /* Padding for clickable area */
+    text-decoration: none; /* Removes underline from links */
+    font-size: 0.9rem; /* Slightly smaller text size */
+    color: black; /* Default text color is black */
+    display: flex; /* Flex layout for icons and text */
+    align-items: center; /* Aligns items vertically */
+    gap: 0.75rem; /* Space between icon and text */
+    transition: 0.3s; /* Smooth hover effect */
+    border-radius: 0; /* No rounded corners initially */
+}
+
+.side-nav a:hover {
+    /* Hover state for links */
+    background-color:  #fff5eb; /* Light orange background */
+    color: black; /* Text color remains black */
+    border-radius: 8px; /* Rounded corners */
+    padding: 1rem 1.5rem; /* Ensures spacing is consistent */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect for depth */
+}
+
+.side-nav a:last-child {
+    /* Styling for the last link */
+    margin-top: auto; /* Pushes it to the bottom */
+    border-top: 1px solid #f1f5f9; /* Divider line */
+}
+
+.image-preview-container {
+    width: 100%;
+    margin-bottom: 1rem;
+    text-align: center;
+    display: none; /* Hide by default */
+}
+
+.image-preview {
+    max-width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid #e1e4e8;
+}
+
+.side-nav .close-btn {
+    position: absolute;
+    top: 10px; /* Adjust distance from top */
+    right: 10px; /* Adjust distance from right */
+    font-size: 2rem;
+    color: var(--text-color);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    z-index: 1002;
+}
+
+
+.side-nav .close-btn:hover {
+    background-color: #f1f5f9; /* Highlight on hover */
+}
+/* Style for images inside side menu links */
+.side-nav a img.side-nav-icon {
+    width: 18px; /* Adjust the width to make the image smaller */
+    height: 18px; /* Adjust the height to make the image smaller */
+    margin-right: 10px; /* Space between the icon and the text */
+}
+
+        .container {
+            display: flex;
+            gap: 2rem;
+            padding: 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+           
+        }
+
+        #lostPetForm {
+    position: sticky;
+    top: 5rem;
+    flex: 1;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column; 
+    gap: 0.5rem; 
+  
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+            
+        }
+
+        #lostPetForm input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--input-border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        #lostPetForm input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 124, 4, 0.1);
+        }
+
+        #lostPetForm button {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        #lostPetForm button:hover {
+            background-color: #ff8534;
+            transform: translateY(-1px);
+        }
+
+        #missingPets {
+            flex: 2;
+            background-color:white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+           
+        }
+     
+
+        .pet-entry {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: #FFF7D1;
+            margin-bottom: 1rem;
+            border: 1px solid var(--input-border-color);
+            transition: var(--transition);
+         
+           
+        }
+
+        .pet-entry:hover {
+            box-shadow: var(--card-shadow);
+            transform: translateY(-2px);
+        }
+
+        .pet-entry img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+           
+        }
+
+       
+
+.pet-details {
+            display: grid;
+            gap: 0.5rem;
+            font-size: 0.750rem; 
+            line-height: 1.4;
+        }
+
+        .pet-details strong {
+            color:#333 ;
+            font-size: 0.rem;
+            display: inline-block;
+            min-width: 80px; 
+        }
+
+
+        .buttonsContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .buttonsContainer button {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+
+        .found-btn {
+            background-color: #FFD66B;
+            color:black; 
+        }
+
+        .found-btn:hover {
+            background-color: #f5dea4;
+        }
+
+        .reports-btn {
+            background-color: #f5dea4;
+            color: black;
+        }
+
+        .reports-btn:hover {
+            background-color: #ed8383;
+        }
+
+        .notification-badge {
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 12px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        h2 {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            font-family: mainfont;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+            }
+
+            #lostPetForm {
+                position: relative;
+                top: 0;
+                width: 100%;
+                max-height: none;
+            }
+
+            #missingPets {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .pet-entry {
+                grid-template-columns: 1fr;
+            }
+
+            .pet-entry img {
+                width: 100%;
+                height: 200px;
+            }
+
+            .buttonsContainer {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .image-preview {
+                height: 150px;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .buttonsContainer {
+                flex-direction: column;
+            }
+
+            .buttonsContainer button {
+                width: 100%;
+            }
+
+            .image-preview-container {
+                width: 100%;
+                margin-bottom: 1rem;
+                text-align: center;
+                display: none;
+            }
+            
+            .image-preview {
+                max-width: 100%;
+                height: 200px;
+                border-radius: 8px;
+                object-fit: cover;
+                border: 2px solid #e1e4e8;
+            }
+            
+            .upload-btn-wrapper {
+                margin: 1rem 0;
+            }
+
+
+            .upload-btn {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                background: linear-gradient(135deg, #ff7c04, #ff9642);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 1rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                transition: all 0.3s ease;
+            }
+            
+            .upload-btn:hover {
+                background: linear-gradient(135deg, #ff8534, #ffa76a);
+                transform: translateY(-1px);
+            }
+            
+            .upload-btn i {
+                font-size: 1.2rem;
+            }
+            
+            #imageInput {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <div class="logo">PAWTION CARE 🐾</div>
+    </header>
+    <div id="mySidenav" class="side-nav">
+        <span class="close-btn" onclick="closeNav()">&times;</span>  
+        <!-- <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>     -->
+        <a href="posting_pet_adoption.html"><img src="picture/postpet.png" alt="Post a New Pet" class="side-nav-icon">Post a New Pet for Adoption</a>
+        <a href="list_of_pets.html"><img src="picture/list.png" alt="List of Pets" class="side-nav-icon">List of Pets for Adoption</a>
+        <a href="lost_and_found.html"><img src="picture/post.png" alt="Post Lost Pet" class="side-nav-icon">Post a New Pet for Lost and Found</a>
+        <a href="missing_pets.html"><img src="picture/list.png" alt="Missing Pets" class="side-nav-icon">List of Pets for Lost and Found</a>
+        <a href="messages.html"><img src="picture/chat.png" alt="Messages" class="side-nav-icon">Messages</a>
+        <a href="success_petAdoption.html"><img src="picture/history.png" alt="History of Success Adoption" class="side-nav-icon">History of Success Pet Adoption</a>
+        <a href="reactivation.html"><img src="picture/reactivated.png" alt="Reactivation Requests" class="side-nav-icon">Reactivation Requests</a>
+        <a href="javascript:void(0)" onclick="logout()" style="margin-top: auto;"><img src="picture/logout.png" alt="Logout" class="side-nav-icon">Logout</a>
+    </div>
+
+    <div class="container">
+        <form id="lostPetForm">
+            <h2>Add Lost Pet</h2>
+            <div class="image-preview-container">
+                <img id="imagePreview" class="image-preview" src="#" alt="Preview">
+            </div>
+            <input type="text" id="petName" placeholder="Pet Name" required>
+            <input type="text" id="lastSeen" placeholder="Last Seen Location" required>
+            <input type="text" id="color" placeholder="Color" required>
+            <input type="text" id="species" placeholder="Species" required>
+            <input type="text" id="breed" placeholder="Breed" required>
+            <input type="text" id="age" placeholder="Age" required>
+            <input type="text" id="remarks" placeholder="Remarks">
+            <input type="text" id="reward" placeholder="Reward">
+            <input type="tel" id="contactNumber" placeholder="Contact Number" required>
+            <div class="upload-btn-wrapper">
+                <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                <button type="button" onclick="document.getElementById('imageInput').click()" style="width: 100%; padding: 0.75rem 1rem; background: linear-gradient(135deg, #ff7c04, #ff9642); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600; margin-bottom: 1rem;">
+                    Upload Pet Photo
+                </button>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="missingPets">
+            <h2>List of Missing Pets</h2>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">    </div>
+            <div id="petList"></div>
+        </div>
+    </div>
+
+
+    <script>
+        window.handleImageUpload = async function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Show preview
+                const preview = document.getElementById('imagePreview');
+                const container = document.querySelector('.image-preview-container');
+                container.style.display = 'block';
+                preview.src = URL.createObjectURL(file);
+        
+                // Store the file in a global variable for later use
+                window.selectedFile = file;
+            }
+        }
+        </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-storage.js";
+    
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.firebaseapp.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const storage = getStorage();
+
+        function generateUniqueId() {
+            return push(ref(db, 'lost_and_found')).key;
+        }
+    
+        function displayPet(pet, petId) {
+            const petList = document.getElementById('petList');
+            const petEntry = document.createElement('div');
+            petEntry.className = 'pet-entry';
+            petEntry.setAttribute('data-id', petId);
+        
+            const petImage = document.createElement('img');
+            petImage.src = pet.photoUrl;
+            petImage.alt = pet.petName;
+        
+            const petDetails = document.createElement('div');
+            petDetails.className = 'pet-details';
+            petDetails.innerHTML = `
+                <strong>Pet Name:</strong> ${pet.petName}<br>
+                <strong>Last Seen Location:</strong> ${pet.lastSeen}<br>
+                <strong>Color:</strong> ${pet.color}<br>
+                <strong>Species:</strong> ${pet.species}<br>
+                <strong>Breed:</strong> ${pet.breed}<br>
+                <strong>Age:</strong> ${pet.age}<br>
+                <strong>Remarks:</strong> ${pet.remarks}<br>
+                <strong>Reward:</strong> ${pet.reward}<br>
+                <strong>Contact Number:</strong> ${pet.contactNumber}
+            `;
+        
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'buttonsContainer';
+        
+            const foundButton = document.createElement('button');
+            foundButton.innerText = 'Already Found';
+            foundButton.classList.add('found-btn');
+            foundButton.addEventListener('click', () => {
+                if (confirm(`Already Found? If yes, the profile of ${pet.petName} will be deleted.`)) {
+                    const petId = petEntry.getAttribute('data-id');
+                    const petRef = ref(db, `lost_and_found/${petId}`);
+        
+                    remove(petRef)
+                        .then(() => {
+                            alert(`${pet.petName} marked as found and removed from the list!`);
+                            petEntry.remove();
+                        })
+                        .catch((error) => {
+                            console.error('Error removing pet: ', error);
+                        });
+                }
+            });
+        
+            const reportsButton = document.createElement('button');
+            reportsButton.classList.add('reports-btn');
+            reportsButton.innerHTML = `See Reports <span class="notification-badge" id="reportBadge_${petId}" style="display: none;">0</span>`;
+            reportsButton.addEventListener('click', () => {
+                window.location.href = `reports.html?petId=${petId}`;
+            });
+        
+            // Create the badge first, then initialize it
+            const reportsRef = ref(db, `Reports/${petId}`);
+            onValue(reportsRef, (snapshot) => {
+                const badge = document.getElementById(`reportBadge_${petId}`);
+                if (badge && snapshot.exists()) {
+                    const reportsCount = Object.keys(snapshot.val()).length;
+                    badge.textContent = reportsCount;
+                    badge.style.display = reportsCount > 0 ? 'inline-block' : 'none';
+                }
+            });
+        
+            buttonsContainer.appendChild(foundButton);
+            buttonsContainer.appendChild(reportsButton);
+        
+            petEntry.appendChild(petImage);
+            petEntry.appendChild(petDetails);
+            petEntry.appendChild(buttonsContainer);
+        
+            petList.appendChild(petEntry);
+        }
+
+        function initializeReportCount(petId) {
+            const reportsRef = ref(db, `Reports/${petId}`);
+            const badge = document.getElementById(`reportBadge_${petId}`);
+            
+            onValue(reportsRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const reportsCount = Object.keys(snapshot.val()).length;
+                    badge.textContent = reportsCount;
+                    badge.style.display = reportsCount > 0 ? 'inline-block' : 'none';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // Show preview
+                const preview = document.getElementById('imagePreview');
+                preview.style.display = 'block';
+                preview.src = URL.createObjectURL(file);
+        
+                // Store the file for later upload
+                window.selectedFile = file;
+            }
+        }
+
+        function updateReportBadge(petId) {
+            const reportsRef = ref(db, `Reports/${petId}`);
+            const badge = document.getElementById(`reportBadge_${petId}`);
+
+            if (badge) {
+                onValue(reportsRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const reportsCount = snapshot.size;
+                        badge.style.display = 'inline-block';
+                        badge.textContent = reportsCount;
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }, {
+                    onlyOnce: false
+                });
+            }
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const file = input.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    
+        function loadPets() {
+            const lostAndFoundRef = ref(db, 'lost_and_found');
+            onValue(lostAndFoundRef, (snapshot) => {
+                const petList = document.getElementById('petList');
+                petList.innerHTML = ''; // Clear the list before rendering
+
+                snapshot.forEach((childSnapshot) => {
+                    const petId = childSnapshot.key;
+                    const pet = childSnapshot.val();
+                    displayPet(pet, petId);
+                });
+            });
+        }
+    
+        document.getElementById('lostPetForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+        
+            if (!window.selectedFile) {
+                alert('Please upload a pet photo');
+                return;
+            }
+    
+            try {
+                // Upload image to Firebase Storage
+                const imageRef = storageRef(storage, `lost_pets/${Date.now()}_${window.selectedFile.name}`);
+                const uploadResult = await uploadBytes(imageRef, window.selectedFile);
+                const photoUrl = await getDownloadURL(uploadResult.ref);
+        
+                const petName = document.getElementById('petName').value;
+                const lastSeen = document.getElementById('lastSeen').value;
+                const color = document.getElementById('color').value;
+                const species = document.getElementById('species').value;
+                const breed = document.getElementById('breed').value;
+                const age = document.getElementById('age').value;
+                const remarks = document.getElementById('remarks').value;
+                const reward = document.getElementById('reward').value;
+                const contactNumber = document.getElementById('contactNumber').value;
+        
+                const petId = generateUniqueId();
+                const petRef = ref(db, `lost_and_found/${petId}`);
+        
+                await set(petRef, {
+                    petName,
+                    photoUrl,
+                    lastSeen,
+                    color,
+                    species,
+                    breed,
+                    age,
+                    remarks,
+                    reward,
+                    contactNumber,
+                    submissionDate: new Date().toISOString()
+                });
+        
+                alert('Pet entry added successfully!');
+                document.getElementById('lostPetForm').reset();
+                document.getElementById('imagePreview').style.display = 'none';
+                document.querySelector('.image-preview-container').style.display = 'none';
+                window.selectedFile = null;
+            } catch (error) {
+                console.error('Error adding pet entry:', error);
+                alert('Error adding pet entry. Please try again.');
+            }
+        });
+
+        // Load pets when the page loads
+
+
+        // Responsive image loading
+        function handleImageError(img) {
+            img.onerror = null; // Prevent infinite loop
+            img.src = '/path/to/placeholder-image.jpg'; // Replace with actual placeholder image path
+        }
+
+        // Add this to all img elements
+        document.querySelectorAll('img').forEach(img => {
+            img.onerror = () => handleImageError(img);
+        });
+
+        window.closeNav = function() {
+            document.getElementById('mySidenav').style.width = '0';
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPets();
+            
+            const menuBtn = document.getElementById('menuBtn');
+            const sideNav = document.getElementById('mySidenav');
+
+            menuBtn.addEventListener('click', () => {
+                sideNav.style.width = '250px';
+            });
+
+            // Close side nav when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!sideNav.contains(event.target) && event.target !== menuBtn) {
+                    sideNav.style.width = '0';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

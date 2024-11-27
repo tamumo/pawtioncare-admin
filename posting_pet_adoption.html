@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAWTION CARE - Pet Registration</title>
+    <style>
+         @font-face {
+        font-family: 'mainfont';
+        src: url(FONT1/b4.ttf);}
+        :root {
+    --primary-color: #ff7c04;
+    --primary-light: #ffc387;
+    --background-color: #faf9f6;
+    --text-color: #2d3436;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --input-bg: #ffffff;
+    --input-border: #e2e8f0;
+    --header-height: 70px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color:white;
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.header {
+    height: var(--header-height);
+    background: linear-gradient(135deg, var(--primary-color), #ff9f45);
+    color: white;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.content {
+    margin-top: var(--header-height);
+    padding: 2rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 0.5rem;
+
+}
+
+.column {
+    background: var(--input-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    border: 2px solid #ff7c04;
+}
+
+h2 {
+    color: black;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: mainfont;
+}
+
+h2::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 24px;
+    background: var(--primary-color);
+    border-radius: 2px;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: var(--input-bg);
+}
+
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255, 124, 4, 0.1);
+}
+
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.image-preview {
+    width: 200px;
+    height: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    background: #f8fafc;
+    
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.upload-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background: #ff7c04;
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.upload-btn:hover {
+    background: orange;
+    transform: translateY(-1px);
+}
+
+.upload-btn-wrapper input[type=file] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.submit-btn-container {
+    display: flex;
+    justify-content: center;
+    margin: 3rem 0;
+}
+
+.submit-btn {
+    padding: 1rem 3rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px -1px rgba(255, 124, 4, 0.2);
+}
+
+.submit-btn:hover {
+    background: #ff7c04;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px -1px rgba(210, 206, 201, 0.3);
+}
+/* Side Navigation Menu Section */
+.side-nav {
+    /* Main container for the side menu */
+    height: 100%; /* Full height of the viewport */
+    width: 0; /* Initially hidden */
+    position: fixed; /* Keeps the menu fixed to the viewport */
+    z-index: 1001; /* Ensures the menu is above other content */
+    top: 0; /* Starts at the top of the page */
+    left: 0; /* Aligns the menu to the left */
+    background: white; /* Background color of the side menu */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    transition: 0.3s; /* Smooth transition for open/close */
+    padding-top: var(--header-height); /* Space for the header */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-right: 4px solid #ff7c04;
+}
+
+.side-nav a {
+    /* Links inside the side menu */
+    padding: 1rem 1.5rem; /* Padding for clickable area */
+    text-decoration: none; /* Removes underline from links */
+    font-size: 0.9rem; /* Slightly smaller text size */
+    color: black; /* Default text color is black */
+    display: flex; /* Flex layout for icons and text */
+    align-items: center; /* Aligns items vertically */
+    gap: 0.75rem; /* Space between icon and text */
+    transition: 0.3s; /* Smooth hover effect */
+    border-radius: 0; /* No rounded corners initially */
+}
+
+.side-nav a:hover {
+    /* Hover state for links */
+    background-color:  #fff5eb; /* Light orange background */
+    color: black; /* Text color remains black */
+    border-radius: 8px; /* Rounded corners */
+    padding: 1rem 1.5rem; /* Ensures spacing is consistent */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect for depth */
+}
+
+.side-nav a:last-child {
+    /* Styling for the last link */
+    margin-top: auto; /* Pushes it to the bottom */
+    border-top: 1px solid #f1f5f9; /* Divider line */
+}
+
+.side-nav .close-btn {
+    /* Close button inside the side menu */
+    position: absolute; /* Positioned relative to the menu */
+    top: 1rem; /* Distance from the top */
+    right: 1rem; /* Distance from the right */
+    font-size: 2rem; /* Size of the close icon */
+    color: var(--text-color); /* Icon color */
+    cursor: pointer; /* Hand pointer for interactivity */
+    width: 40px; /* Button size */
+    height: 40px;
+    display: flex; /* Flexbox for centering */
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Circular button */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+.side-nav .close-btn:hover {
+    background-color: #f1f5f9; /* Highlight on hover */
+}
+/* Style for images inside side menu links */
+.side-nav a img.side-nav-icon {
+    width: 18px; /* Adjust the width to make the image smaller */
+    height: 18px; /* Adjust the height to make the image smaller */
+    margin-right: 10px; /* Space between the icon and the text */
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        padding: 0.5rem;
+    }
+
+    .column {
+        padding: 1.5rem;
+    }
+
+    .header {
+        padding: 0 1rem;
+    }
+
+    .content {
+        padding: 1rem;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <button class="menu-btn" onclick="openNav()">☰</button>
+        <div class="logo">PAWTION CARE 🐾</div>
+    </header>
+
+    <div id="mySidenav" class="side-nav">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>    
+        <a href="posting_pet_adoption.html"><img src="picture/postpet.png" alt="Post a New Pet" class="side-nav-icon">Post a New Pet for Adoption</a>
+        <a href="list_of_pets.html"><img src="picture/list.png" alt="List of Pets" class="side-nav-icon">List of Pets for Adoption</a>
+        <a href="lost_and_found.html"><img src="picture/post.png" alt="Post Lost Pet" class="side-nav-icon">Post a New Pet for Lost and Found</a>
+        <a href="missing_pets.html"><img src="picture/list.png" alt="Missing Pets" class="side-nav-icon">List of Pets for Lost and Found</a>
+        <a href="messages.html"><img src="picture/chat.png" alt="Messages" class="side-nav-icon">Messages</a>
+        <a href="success_petAdoption.html"><img src="picture/history.png" alt="History of Success Adoption" class="side-nav-icon">History of Success Pet Adoption</a>
+        <a href="reactivation.html"><img src="picture/reactivated.png" alt="Reactivation Requests" class="side-nav-icon">Reactivation Requests</a>
+        <a href="javascript:void(0)" onclick="logout()" style="margin-top: auto;"><img src="picture/logout.png" alt="Logout" class="side-nav-icon">Logout</a>
+    </div>
+    
+
+    <div class="content">
+        <form id="petForm">
+            <div class="container">
+                <div class="column">
+                    <h2>Pet Profile</h2>
+                    <div class="image-upload-container">
+                        <div class="image-preview" id="imagePreview">
+                            <img src="https://via.placeholder.com/150" alt="Pet Image Preview" id="previewImage">
+                        </div>
+                        
+                        <div class="upload-btn-wrapper">
+                            <button class="upload-btn" type="button">Upload Pet Image</button>
+                            <input type="file" id="petImage" accept="image/*" />
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="petName">Name of Pet<span style="color:red"> *</span></label>
+                        <input type="text" id="petName" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="petBio">Pet Bio</label>
+                        <textarea id="petBio" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="petAge">Age of Pet<span style="color:red"> *</span></label>
+                        <input type="text" id="petAge" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="species">Species<span style="color:red"> *</span></label>
+                        <input type="text" id="species" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="breed">Breed<span style="color:red"> *</span></label>
+                        <input type="text" id="breed" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="gender">Gender of Pet<span style="color:red"> *</span></label>
+                        <select id="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="color">Color<span style="color:red"> *</span></label>
+                        <input type="text" id="color" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="size">Size<span style="color:red"> *</span></label>
+                        <input type="text" id="size" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="weight">Weight (in kg)<span style="color:red"> *</span></label>
+                        <input type="number" id="weight" step="0.1" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="dateOfBirth">Date of Birth<span style="color:red"> *</span></label>
+                        <input type="date" id="dateOfBirth" required>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h2>Medical History</h2>
+                    <div class="input-group">
+                        <label for="spayNeuter">Spay/Neuter Status<span style="color:red"> *</span></label>
+                        <select id="spayNeuter" required>
+                            <option value="">Select Status</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="vaccination">Vaccination Status</label>
+                        <select id="vaccination">
+                            <option value="">Select Status</option>
+                            <option value="up-to-date">Up-to-date</option>
+                            <option value="partial">Partial</option>
+                            <option value="not-vaccinated">Not Vaccinated</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="health">Health Conditions</label>
+                        <textarea id="health" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="allergies">Allergies</label>
+                        <textarea id="allergies" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="medications">Medications</label>
+                        <textarea id="medications" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="surgeryHistory">Surgery History</label>
+                        <textarea id="surgeryHistory" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="microchip">Microchip Status<span style="color:red"> *</span></label>
+                        <select id="microchip" required>
+                            <option value="">Select Status</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h2>Lifestyle and Ownership</h2>
+                    <div class="input-group">
+                        <label for="temperament">Temperament</label>
+                        <textarea id="temperament" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="goodWithChildren">Good with Children
+                            <span style="color:red"> *</span></label>
+                        <select id="goodWithChildren" required>
+                            <option value="">Select</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="goodWithPets">Good with Other Pets<span style="color:red"> *</span></label>
+                        <select id="goodWithPets" required>
+                            <option value="">Select</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="diet">Dietary Needs</label>
+                        <textarea id="diet" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="exerciseNeeds">Exercise Needs</label>
+                        <textarea id="exerciseNeeds" rows="3"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="preferredFood">Preferred Food Brands</label>
+                        <input type="text" id="preferredFood">
+                    </div>
+                    <div class="input-group">
+                        <label for="treatPreferences">Treat Preferences</label>
+                        <input type="text" id="treatPreferences">
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-btn-container">
+                <button class="submit-btn" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDl5Fp4skRInqTSL3jF-JqeGmjf8sMoNJI",
+            authDomain: "pawtioncare.firebaseapp.com",
+            projectId: "pawtioncare",
+            storageBucket: "pawtioncare.appspot.com",
+            messagingSenderId: "522059500098",
+            appId: "1:522059500098:web:eba476cc7aa2f0e9eabbdb",
+            measurementId: "G-HE3YMRNKVF"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Image preview functionality
+        const imageInput = document.getElementById('petImage');
+        const previewImage = document.getElementById('previewImage');
+
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function createPetCard(pet) {
+            return `
+                <div class="pet-card">
+                    <div class="pet-image-container">
+                        <img src="${pet.imageUrl}" alt="${pet.petName}" class="pet-image">
+                        <span class="status-badge">Available</span>
+                    </div>
+                    <div class="pet-info">
+                        <h3>Name: ${pet.petName}</h3>
+                        <p>Breed: ${pet.breed}</p>
+                        <p>Species: ${pet.species}</p>
+                        <p>Age: ${pet.petAge}</p>
+                        <button class="favorite-btn">
+                            <svg class="heart-icon" viewBox="0 0 24 24">
+                                <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayPets(petsData) {
+            const container = document.createElement('div');
+            container.className = 'pets-container';
+
+            Object.values(petsData).forEach(pet => {
+                container.innerHTML += createPetCard(pet);
+            });
+
+            // Clear existing pets display if any
+            const existingContainer = document.querySelector('.pets-container');
+            if (existingContainer) {
+                existingContainer.remove();
+            }
+
+            document.querySelector('.content').appendChild(container);
+        }
+
+        // Form submission
+        document.getElementById('petForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Pet Profile Fields
+            const petName = document.getElementById('petName').value;
+            const petBio = document.getElementById('petBio').value;
+            const petAge = document.getElementById('petAge').value;
+            const species = document.getElementById('species').value;
+            const breed = document.getElementById('breed').value;
+            const gender = document.getElementById('gender').value;
+            const color = document.getElementById('color').value;
+            const size = document.getElementById('size').value;
+            const weight = document.getElementById('weight').value;
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+            const imageFile = imageInput.files[0];
+
+            
+
+            // Medical History Fields
+            const spayNeuter = document.getElementById('spayNeuter').value;
+            const vaccination = document.getElementById('vaccination').value;
+            const health = document.getElementById('health').value;
+            const allergies = document.getElementById('allergies').value;
+            const medications = document.getElementById('medications').value;
+            const surgeryHistory = document.getElementById('surgeryHistory').value;
+            const microchip = document.getElementById('microchip').value;
+
+            // Lifestyle and Ownership Fields
+            const temperament = document.getElementById('temperament').value;
+            const goodWithChildren = document.getElementById('goodWithChildren').value;
+            const goodWithPets = document.getElementById('goodWithPets').value;
+            const diet = document.getElementById('diet').value;
+            const exerciseNeeds = document.getElementById('exerciseNeeds').value;
+            const preferredFood = document.getElementById('preferredFood').value;
+            const treatPreferences = document.getElementById('treatPreferences').value;
+
+            try {
+                let imageUrl = null;
+                if (imageFile) {
+                    // Upload image to Firebase Storage
+                    const storage = firebase.storage();
+                    const storageRef = storage.ref('pet_images/' + petName + '_' + Date.now());
+                    const snapshot = await storageRef.put(imageFile);
+                    imageUrl = await snapshot.ref.getDownloadURL();
+                    console.log('Image uploaded successfully. URL:', imageUrl);
+                }
+
+                // Create pet data object with all the fields
+                const petData = {
+                    petName, petBio, petAge, species, breed, gender, color, size, weight,
+                    dateOfBirth, imageUrl, spayNeuter, vaccination, health, allergies,
+                    medications, surgeryHistory, microchip, temperament, goodWithChildren,
+                    goodWithPets, diet, exerciseNeeds, preferredFood, treatPreferences,
+                    status: 'Available',
+                    pendingAdopters: 0,
+                    dateAdded: Date.now()
+                };
+
+                // Save pet data to Firebase Realtime Database
+                const newPetRef = database.ref('pets').push();
+                await newPetRef.set(petData);
+
+                console.log('Pet data saved successfully');
+                alert('Pet registration submitted successfully!');
+                
+                // Reset form
+                document.getElementById('petForm').reset();
+                previewImage.src = 'https://via.placeholder.com/150';
+
+            } catch (error) {
+                console.error('Error submitting pet registration:', error);
+                alert('Error submitting pet registration: ' + error.message);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const maxDate = `${year}-${month}-${day}`;
+        
+            // Set max attribute for date of birth input
+            const dateOfBirthInput = document.getElementById('dateOfBirth');
+            dateOfBirthInput.max = maxDate;
+        });
+
+        // Fetch and display pets sa ilalim
+//        database.ref('pets').on('value', (snapshot) => {
+//            const petsData = snapshot.val();
+//            if (petsData) {
+//                displayPets(petsData);
+//          }
+//        });
+
+        // Navigation functions
+        window.openNav = function() {
+            document.getElementById("mySidenav").style.width = "250px";
+        };
+
+        window.closeNav = function() {
+            document.getElementById("mySidenav").style.width = "0";
+        };
+
+        window.logout = function() {
+            // Close the side navigation
+            closeNav();
+            // Redirect to account.html
+            window.location.href = 'account.html';
+        };
+    </script>
+</body>
+</html>
